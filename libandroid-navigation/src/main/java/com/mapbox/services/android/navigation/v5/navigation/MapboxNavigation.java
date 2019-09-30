@@ -42,9 +42,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import retrofit2.Callback;
-import timber.log.Timber;
-
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.BANNER_INSTRUCTION_MILESTONE_ID;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.NON_NULL_APPLICATION_CONTEXT_REQUIRED;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.VOICE_INSTRUCTION_MILESTONE_ID;
@@ -389,6 +386,7 @@ public class MapboxNavigation implements ServiceConnection {
       navigationService.endNavigation();
       navigationService.stopSelf();
       navigationEventDispatcher.onNavigationEvent(false);
+      AccountsManagerImpl.getInstance(applicationContext).endNavigation();
     }
   }
 
