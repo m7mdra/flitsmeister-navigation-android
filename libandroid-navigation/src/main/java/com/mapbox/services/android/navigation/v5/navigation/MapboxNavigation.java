@@ -386,7 +386,7 @@ public class MapboxNavigation implements ServiceConnection {
       navigationService.endNavigation();
       navigationService.stopSelf();
       navigationEventDispatcher.onNavigationEvent(false);
-      AccountsManagerImpl.getInstance(applicationContext).endNavigation();
+      AccountsManager.getInstance(applicationContext).endNavigation();
     }
   }
 
