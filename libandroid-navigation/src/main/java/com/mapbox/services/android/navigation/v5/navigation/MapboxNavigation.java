@@ -15,6 +15,7 @@ import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.navigator.Navigator;
+import com.mapbox.services.android.navigation.v5.accounts.MapboxNavigationAccounts;
 import com.mapbox.services.android.navigation.v5.internal.navigation.MapboxNavigator;
 import com.mapbox.services.android.navigation.v5.internal.navigation.NavigationEngineFactory;
 import com.mapbox.services.android.navigation.v5.internal.navigation.NavigationEventDispatcher;
@@ -386,7 +387,7 @@ public class MapboxNavigation implements ServiceConnection {
       navigationService.endNavigation();
       navigationService.stopSelf();
       navigationEventDispatcher.onNavigationEvent(false);
-      AccountsManager.getInstance(applicationContext).endNavigation();
+      MapboxNavigationAccounts.getInstance(applicationContext).navigationStopped();
     }
   }
 
