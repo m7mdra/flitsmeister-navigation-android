@@ -953,7 +953,7 @@ public class MapboxNavigation implements ServiceConnection {
   private void startNavigationWith(@NonNull DirectionsRoute directionsRoute, DirectionsRouteType routeType) {
     ValidationUtils.validDirectionsRoute(directionsRoute, options.getDefaultMilestonesEnabled());
     this.directionsRoute = directionsRoute;
-    routeRefresher = new RouteRefresher(this, new RouteRefresh(accessToken));
+    routeRefresher = new RouteRefresher(this, new RouteRefresh(accessToken, applicationContext));
     mapboxNavigator.updateRoute(directionsRoute, routeType);
     if (!isBound) {
       navigationTelemetry.startSession(directionsRoute, locationEngine);
