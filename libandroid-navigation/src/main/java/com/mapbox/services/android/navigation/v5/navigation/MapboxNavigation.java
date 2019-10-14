@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import retrofit2.Callback;
 import timber.log.Timber;
@@ -144,7 +145,8 @@ public class MapboxNavigation implements ServiceConnection {
     this.accessToken = accessToken;
     this.options = options;
     this.mapboxNavigator = new MapboxNavigator(new Navigator());
-    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator);
+    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator,
+            Executors.newSingleThreadScheduledExecutor());
     initialize();
   }
 
@@ -158,7 +160,8 @@ public class MapboxNavigation implements ServiceConnection {
     this.options = new MapboxNavigationOptions.Builder().build();
     this.navigationTelemetry = navigationTelemetry;
     this.mapboxNavigator = new MapboxNavigator(new Navigator());
-    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator);
+    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator,
+            Executors.newSingleThreadScheduledExecutor());
     initializeForTest();
   }
 
@@ -170,8 +173,9 @@ public class MapboxNavigation implements ServiceConnection {
     this.accessToken = accessToken;
     this.options = options;
     this.navigationTelemetry = navigationTelemetry;
-    this.mapboxNavigator = mapboxNavigator;
-    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator);
+    this.mapboxNavigator = new MapboxNavigator(new Navigator());
+    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator,
+            Executors.newSingleThreadScheduledExecutor());
     initializeForTest();
   }
 
@@ -290,7 +294,8 @@ public class MapboxNavigation implements ServiceConnection {
    * @since 0.1.0
    */
   public void setLocationEngine(@NonNull LocationEngine locationEngine) {
-    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator);
+    this.locationEngine = new EnhancedLocationEngineDecorator(locationEngine, mapboxNavigator,
+            Executors.newSingleThreadScheduledExecutor());
     // Setup telemetry with new engine
     navigationTelemetry.updateLocationEngineNameAndSimulation(locationEngine);
     // Notify service to get new location engine.
@@ -354,7 +359,6 @@ public class MapboxNavigation implements ServiceConnection {
    * @since 0.1.0
    */
   public void startNavigation(@NonNull DirectionsRoute directionsRoute) {
-
     startNavigationWith(directionsRoute, DirectionsRouteType.NEW_ROUTE);
   }
 
@@ -931,15 +935,6 @@ public class MapboxNavigation implements ServiceConnection {
       return NavigationTelemetry.INSTANCE;
     }
     return navigationTelemetry;
-  }
-
-  @NonNull
-  private LocationEngine obtainLocationEngine() {
-    if (locationEngine == null) {
-      return LocationEngineProvider.getBestLocationEngine(applicationContext);
-    }
-
-    return locationEngine;
   }
 
   @NonNull
