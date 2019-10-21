@@ -1,7 +1,6 @@
 package com.mapbox.services.android.navigation.v5.navigation;
 
 import android.content.Context;
-import android.location.Location;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,6 +8,7 @@ import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.directions.v5.DirectionsAdapterFactory;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.navigator.Navigator;
 import com.mapbox.services.android.navigation.v5.BaseTest;
 import com.mapbox.services.android.navigation.v5.internal.navigation.NavigationTelemetry;
 import com.mapbox.services.android.navigation.v5.route.FasterRoute;
@@ -99,7 +99,7 @@ public class FasterRouteDetectorTest extends BaseTest {
         Context context = mock(Context.class);
         when(context.getApplicationContext()).thenReturn(mock(Context.class));
         return new MapboxNavigation(context, ACCESS_TOKEN, options, mock(NavigationTelemetry.class),
-                mock(LocationEngine.class));
+                mock(LocationEngine.class), mock(Navigator.class));
     }
 
     private RouteProgress obtainDefaultRouteProgress() throws Exception {

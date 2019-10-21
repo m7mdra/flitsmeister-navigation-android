@@ -5,6 +5,7 @@ import android.content.Context;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.navigator.Navigator;
 import com.mapbox.services.android.navigation.v5.BaseTest;
 import com.mapbox.services.android.navigation.v5.internal.navigation.MapboxNavigator;
 import com.mapbox.services.android.navigation.v5.internal.navigation.NavigationTelemetry;
@@ -219,8 +220,8 @@ public class MapboxNavigationTest extends BaseTest {
 
     navigation.setLocationEngine(locationEngine);
 
-    assertNotSame(locationEngineInstanceNotUsed, navigation.getLocationEngine());
-    assertEquals(locationEngine, navigation.getLocationEngine());
+    assertNotSame(locationEngineInstanceNotUsed, navigation.getOriginalLocationEngine());
+    assertEquals(locationEngine, navigation.getOriginalLocationEngine());
   }
 
   @Test
@@ -300,7 +301,7 @@ public class MapboxNavigationTest extends BaseTest {
 
     navigation.setLocationEngine(newLocationEngine);
 
-    LocationEngine currentLocationEngine = navigation.getLocationEngine();
+    LocationEngine currentLocationEngine = navigation.getOriginalLocationEngine();
     assertNotSame(locationEngine, currentLocationEngine);
   }
 
@@ -339,7 +340,7 @@ public class MapboxNavigationTest extends BaseTest {
     Context context = mock(Context.class);
     when(context.getApplicationContext()).thenReturn(context);
     return new MapboxNavigation(context, ACCESS_TOKEN, options, mock(NavigationTelemetry.class),
-      mock(LocationEngine.class));
+      mock(LocationEngine.class), mock(Navigator.class));
   }
 
   private int searchForVoiceInstructionMilestone(MapboxNavigation navigation) {
