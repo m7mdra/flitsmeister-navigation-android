@@ -15,9 +15,13 @@ android {
 }
 
 dependencies {
+    implementation project(':libnavigation-util')
 
     api dependenciesList.mapboxSdkGeoJSON
     api dependenciesList.mapboxCore
+
+    // Support
+    implementation dependenciesList.supportAppcompatV7
 
     //ktlint
     ktlint dependenciesList.ktlint

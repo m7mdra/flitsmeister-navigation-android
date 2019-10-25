@@ -1,5 +1,7 @@
 package com.mapbox.services.android.navigation.v5.internal.navigation
 
+import com.mapbox.navigation.utils.time.ElapsedTime
+
 internal class InitialGpsEventFactory @JvmOverloads constructor(
     private var time: ElapsedTime = ElapsedTime(),
     private val handler: InitialGpsEventHandler = InitialGpsEventHandler()
