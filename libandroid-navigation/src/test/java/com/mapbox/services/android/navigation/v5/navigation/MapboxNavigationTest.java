@@ -220,8 +220,8 @@ public class MapboxNavigationTest extends BaseTest {
 
     navigation.setLocationEngine(locationEngine);
 
-    assertNotSame(locationEngineInstanceNotUsed, navigation.getOriginalLocationEngine());
-    assertEquals(locationEngine, navigation.getOriginalLocationEngine());
+    assertNotSame(locationEngineInstanceNotUsed, navigation.getLocationEngine());
+    assertEquals(locationEngine, navigation.getLocationEngine());
   }
 
   @Test
@@ -301,7 +301,7 @@ public class MapboxNavigationTest extends BaseTest {
 
     navigation.setLocationEngine(newLocationEngine);
 
-    LocationEngine currentLocationEngine = navigation.getOriginalLocationEngine();
+    LocationEngine currentLocationEngine = navigation.getLocationEngine();
     assertNotSame(locationEngine, currentLocationEngine);
   }
 
