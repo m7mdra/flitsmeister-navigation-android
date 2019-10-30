@@ -1,12 +1,12 @@
 package com.mapbox.services.android.navigation.v5.navigation
 
 import android.os.AsyncTask
-import com.mapbox.navigator.Navigator
+import com.mapbox.navigation.navigator.Navigator
 
 internal class ConfigureRouterTask(
-    private val navigator: Navigator,
-    private val tilePath: String,
-    private val callback: OnOfflineTilesConfiguredCallback
+        private val navigator: Navigator,
+        private val tilePath: String,
+        private val callback: OnOfflineTilesConfiguredCallback
 ) : AsyncTask<Void, Void, Long>() {
 
     @Synchronized override fun doInBackground(vararg paramsUnused: Void): Long =

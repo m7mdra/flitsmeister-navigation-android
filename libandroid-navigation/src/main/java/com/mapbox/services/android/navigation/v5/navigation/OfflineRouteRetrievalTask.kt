@@ -3,13 +3,13 @@ package com.mapbox.services.android.navigation.v5.navigation
 import android.os.AsyncTask
 import com.google.gson.Gson
 import com.mapbox.api.directions.v5.models.DirectionsRoute
-import com.mapbox.navigator.Navigator
-import com.mapbox.navigator.RouterResult
+import com.mapbox.navigation.navigator.Navigator
+import com.mapbox.navigation.navigator.RouterResult
 import timber.log.Timber
 
 internal class OfflineRouteRetrievalTask(
-    private val navigator: Navigator,
-    private val callback: OnOfflineRouteFoundCallback
+        private val navigator: Navigator,
+        private val callback: OnOfflineRouteFoundCallback
 ) : AsyncTask<OfflineRoute, Void, DirectionsRoute>() {
 
     @Volatile private lateinit var routerResult: RouterResult

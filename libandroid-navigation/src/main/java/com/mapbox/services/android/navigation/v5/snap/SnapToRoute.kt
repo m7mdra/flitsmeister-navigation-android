@@ -1,7 +1,7 @@
 package com.mapbox.services.android.navigation.v5.snap
 
 import android.location.Location
-import com.mapbox.navigator.NavigationStatus
+import com.mapbox.navigation.navigator.NavigationStatus
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress
 
 class SnapToRoute : Snap() {

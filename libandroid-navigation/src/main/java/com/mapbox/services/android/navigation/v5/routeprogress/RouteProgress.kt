@@ -5,9 +5,9 @@ import com.mapbox.api.directions.v5.models.LegStep
 import com.mapbox.api.directions.v5.models.RouteLeg
 import com.mapbox.geojson.Geometry
 import com.mapbox.geojson.Point
+import com.mapbox.navigation.navigator.BannerInstruction
+import com.mapbox.navigation.navigator.VoiceInstruction
 import com.mapbox.navigation.utils.extensions.ifNonNull
-import com.mapbox.navigator.BannerInstruction
-import com.mapbox.navigator.VoiceInstruction
 
 /**
  * This class contains all progress information at any given time during a navigation session. This
@@ -24,23 +24,23 @@ import com.mapbox.navigator.VoiceInstruction
  * @since 0.1.0
  */
 data class RouteProgress internal constructor(
-    var directionsRoute: DirectionsRoute? = null,
-    var legIndex: Int? = null,
-    var distanceRemaining: Double? = null,
-    var currentLegProgress: RouteLegProgress? = null,
-    var currentStepPoints: List<Point>? = null,
-    var upcomingStepPoints: List<Point>? = null,
-    var inTunnel: Boolean? = null,
-    var voiceInstruction: VoiceInstruction? = null,
-    var bannerInstruction: BannerInstruction? = null,
-    var currentState: RouteProgressState? = null,
-    var routeGeometryWithBuffer: Geometry? = null,
-    var currentStep: LegStep? = null,
-    var stepIndex: Int? = null,
-    var legDistanceRemaining: Double? = null,
-    var stepDistanceRemaining: Double? = null,
-    var legDurationRemaining: Double? = null,
-    var builder: Builder
+        var directionsRoute: DirectionsRoute? = null,
+        var legIndex: Int? = null,
+        var distanceRemaining: Double? = null,
+        var currentLegProgress: RouteLegProgress? = null,
+        var currentStepPoints: List<Point>? = null,
+        var upcomingStepPoints: List<Point>? = null,
+        var inTunnel: Boolean? = null,
+        var voiceInstruction: VoiceInstruction? = null,
+        var bannerInstruction: BannerInstruction? = null,
+        var currentState: RouteProgressState? = null,
+        var routeGeometryWithBuffer: Geometry? = null,
+        var currentStep: LegStep? = null,
+        var stepIndex: Int? = null,
+        var legDistanceRemaining: Double? = null,
+        var stepDistanceRemaining: Double? = null,
+        var legDurationRemaining: Double? = null,
+        var builder: Builder
 ) {
 
     /**

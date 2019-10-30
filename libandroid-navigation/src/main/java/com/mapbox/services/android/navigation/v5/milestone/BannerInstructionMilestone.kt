@@ -3,8 +3,8 @@ package com.mapbox.services.android.navigation.v5.milestone
 import com.mapbox.api.directions.v5.models.BannerComponents
 import com.mapbox.api.directions.v5.models.BannerInstructions
 import com.mapbox.api.directions.v5.models.BannerText
+import com.mapbox.navigation.navigator.BannerSection
 import com.mapbox.navigation.utils.extensions.ifNonNull
-import com.mapbox.navigator.BannerSection
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress
 import java.util.ArrayList
 
@@ -37,7 +37,7 @@ private constructor(
     private fun updateCurrentBanner(routeProgress: RouteProgress): Boolean =
         ifNonNull(
             routeProgress.bannerInstruction(),
-            retrieveBannerFrom(routeProgress.bannerInstruction()?.primary)
+            retrieveBannerFrom(routeProgress.bannerInstruction().primary)
         ) { currentBannerInstruction, primaryBannerText ->
             val secondaryBannerText: BannerText? = retrieveBannerFrom(currentBannerInstruction.secondary)
             val subBannerText: BannerText? = retrieveBannerFrom(currentBannerInstruction.sub)

@@ -1,6 +1,6 @@
 package com.mapbox.services.android.navigation.v5.routeprogress
 
-import com.mapbox.navigator.RouteState
+import com.mapbox.navigation.navigator.RouteState
 import java.util.HashMap
 
 class RouteProgressStateMap : HashMap<RouteState, RouteProgressState?>() {

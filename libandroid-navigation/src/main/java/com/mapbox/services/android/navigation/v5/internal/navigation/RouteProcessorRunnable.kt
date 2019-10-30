@@ -3,9 +3,9 @@ package com.mapbox.services.android.navigation.v5.internal.navigation
 import android.location.Location
 import android.os.Handler
 import com.mapbox.api.directions.v5.models.DirectionsRoute
+import com.mapbox.navigation.navigator.NavigationStatus
+import com.mapbox.navigation.navigator.RouteState
 import com.mapbox.navigation.utils.extensions.ifNonNull
-import com.mapbox.navigator.NavigationStatus
-import com.mapbox.navigator.RouteState
 import com.mapbox.services.android.navigation.v5.milestone.Milestone
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions
@@ -92,11 +92,11 @@ internal class RouteProcessorRunnable(
     }
 
     private fun checkForNewLegIndex(
-        mapboxNavigator: MapboxNavigator,
-        route: DirectionsRoute,
-        currentStatus: NavigationStatus,
-        previousStatus: NavigationStatus?,
-        autoIncrementEnabled: Boolean
+            mapboxNavigator: MapboxNavigator,
+            route: DirectionsRoute,
+            currentStatus: NavigationStatus,
+            previousStatus: NavigationStatus?,
+            autoIncrementEnabled: Boolean
     ): NavigationStatus {
         if (previousStatus == null) {
             return currentStatus

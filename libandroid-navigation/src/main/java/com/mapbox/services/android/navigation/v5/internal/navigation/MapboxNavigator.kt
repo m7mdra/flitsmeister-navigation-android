@@ -5,11 +5,7 @@ import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.Geometry
 import com.mapbox.geojson.Point
 import com.mapbox.geojson.gson.GeometryGeoJson
-import com.mapbox.navigator.BannerInstruction
-import com.mapbox.navigator.FixLocation
-import com.mapbox.navigator.NavigationStatus
-import com.mapbox.navigator.Navigator
-import com.mapbox.navigator.VoiceInstruction
+import com.mapbox.navigation.navigator.*
 import com.mapbox.services.android.navigation.v5.navigation.DirectionsRouteType
 import java.util.Date
 
@@ -41,7 +37,7 @@ class MapboxNavigator(private val navigator: Navigator) {
      */
     @Synchronized
     fun retrieveHistory(): String {
-        return navigator.history
+        return navigator.getHistory()
     }
 
     /**

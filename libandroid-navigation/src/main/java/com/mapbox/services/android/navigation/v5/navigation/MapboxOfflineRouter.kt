@@ -2,7 +2,7 @@ package com.mapbox.services.android.navigation.v5.navigation
 
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.geojson.BoundingBox
-import com.mapbox.navigator.Navigator
+import com.mapbox.navigation.navigator.Navigator
 import java.io.File
 
 /**

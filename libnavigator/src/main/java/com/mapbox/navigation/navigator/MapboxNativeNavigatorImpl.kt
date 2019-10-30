@@ -4,9 +4,6 @@ import android.location.Location
 import com.mapbox.geojson.Point
 import com.mapbox.navigation.base.route.Route
 import com.mapbox.navigation.base.trip.RouteProgress
-import com.mapbox.navigator.FixLocation
-import com.mapbox.navigator.NavigationStatus
-import com.mapbox.navigator.Navigator
 import java.util.Date
 
 object MapboxNativeNavigatorImpl : MapboxNativeNavigator {

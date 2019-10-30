@@ -1,7 +1,7 @@
 package com.mapbox.services.android.navigation.v5.navigation
 
 import com.mapbox.geojson.Point
-import com.mapbox.navigator.Navigator
+import com.mapbox.navigation.navigator.Navigator
 
 internal class OfflineNavigator(private val navigator: Navigator) {
 
