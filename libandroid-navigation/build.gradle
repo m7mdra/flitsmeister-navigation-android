@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
   compileSdkVersion androidVersions.compileSdkVersion
@@ -59,6 +61,7 @@ dependencies {
   testImplementation dependenciesList.hamcrest
   testImplementation dependenciesList.commonsIO
   testImplementation dependenciesList.robolectric
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply from: 'javadoc.gradle'
@@ -67,3 +70,6 @@ apply from: "${rootDir}/gradle/checkstyle.gradle"
 apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/dependencies-graph.gradle"
 apply from: "${rootDir}/gradle/dependency-updates.gradle"
+repositories {
+  mavenCentral()
+}
