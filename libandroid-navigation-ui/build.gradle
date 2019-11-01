@@ -44,6 +44,8 @@ dependencies {
   implementation dependenciesList.supportConstraintLayout
   implementation dependenciesList.supportCardView
 
+  implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:4.9.0'
+
   // Architecture libraries
   implementation dependenciesList.lifecycleExtensions
   annotationProcessor dependenciesList.lifecycleCompiler

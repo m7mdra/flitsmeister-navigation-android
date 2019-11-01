@@ -115,7 +115,7 @@ public class FasterRouteDetector extends FasterRoute {
 
   private boolean validRouteDurationRemaining(RouteProgress routeProgress) {
     // Total route duration remaining in seconds
-    int routeDurationRemaining = (int) routeProgress.durationRemaining();
+    int routeDurationRemaining = (int)routeProgress.durationRemaining();
     return routeDurationRemaining > VALID_ROUTE_DURATION_REMAINING;
   }
 

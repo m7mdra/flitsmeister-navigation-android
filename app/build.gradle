@@ -52,6 +52,8 @@ dependencies {
   implementation dependenciesList.supportCardView
   implementation dependenciesList.lifecycleExtensions
 
+  implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:4.9.0'
+
   implementation dependenciesList.gmsLocation
 
   // Logging

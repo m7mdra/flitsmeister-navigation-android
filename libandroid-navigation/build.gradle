@@ -42,7 +42,7 @@ android {
 
 dependencies {
   api dependenciesList.mapboxEvents
-  api dependenciesList.mapboxSdkServices
+  implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:4.9.0'
   api dependenciesList.mapboxSdkTurf
 
   // Support
