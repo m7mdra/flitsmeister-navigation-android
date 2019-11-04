@@ -2,9 +2,10 @@ package com.mapbox.services.android.navigation.v5.location.replay;
 
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

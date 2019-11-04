@@ -1,9 +1,9 @@
 package com.mapbox.services.android.navigation.v5.navigation;
 
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
+import android.util.Pair;
+
+import androidx.annotation.NonNull;
 
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.LegAnnotation;
@@ -29,6 +29,8 @@ import com.mapbox.services.android.navigation.v5.utils.MathUtils;
 import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfMeasurement;
 import com.mapbox.turf.TurfMisc;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -298,7 +300,7 @@ public class NavigationHelper {
    */
   @NonNull
   public static List<Pair<StepIntersection, Double>> createDistancesToIntersections(List<Point> stepPoints,
-                                                                             List<StepIntersection> intersections) {
+                                                                                    List<StepIntersection> intersections) {
     boolean lessThanTwoStepPoints = stepPoints.size() < TWO_POINTS;
     boolean noIntersections = intersections.isEmpty();
     if (lessThanTwoStepPoints || noIntersections) {

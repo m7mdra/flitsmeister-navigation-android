@@ -3,11 +3,12 @@ package com.mapbox.services.android.navigation.ui.v5.instruction.maneuver;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.mapbox.services.android.navigation.ui.v5.R;
 import com.mapbox.services.android.navigation.ui.v5.ThemeSwitcher;

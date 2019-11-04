@@ -1,7 +1,6 @@
 package com.mapbox.services.android.navigation.v5.navigation.metrics;
 
 import android.location.Location;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.auto.value.AutoValue;
@@ -11,6 +10,8 @@ import com.mapbox.core.constants.Constants;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.services.android.navigation.v5.routeprogress.MetricsRouteProgress;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;

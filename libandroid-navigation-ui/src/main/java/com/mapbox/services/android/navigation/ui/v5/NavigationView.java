@@ -2,21 +2,22 @@ package com.mapbox.services.android.navigation.ui.v5;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
 
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.geojson.Point;
@@ -164,7 +165,6 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
    * Called to ensure the {@link MapView} is destroyed
    * properly.
    * <p>
-   * In an {@link Activity} this should be in {@link Activity#onDestroy()}.
    * <p>
    * In a {@link android.app.Fragment}, this should be in {@link Fragment#onDestroyView()}.
    */

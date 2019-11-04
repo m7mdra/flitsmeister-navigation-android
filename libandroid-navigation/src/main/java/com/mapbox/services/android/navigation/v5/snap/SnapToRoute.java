@@ -1,8 +1,8 @@
 package com.mapbox.services.android.navigation.v5.snap;
 
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
 
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.LineString;
@@ -14,6 +14,8 @@ import com.mapbox.services.android.navigation.v5.utils.MathUtils;
 import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfMeasurement;
 import com.mapbox.turf.TurfMisc;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

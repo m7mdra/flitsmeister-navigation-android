@@ -1,9 +1,9 @@
 package com.mapbox.services.android.navigation.v5.routeprogress;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
+import android.util.Pair;
+
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 import com.mapbox.api.directions.v5.models.LegStep;
@@ -11,6 +11,8 @@ import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.api.directions.v5.models.StepIntersection;
 import com.mapbox.geojson.Point;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

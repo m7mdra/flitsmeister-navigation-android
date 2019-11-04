@@ -1,9 +1,9 @@
 package com.mapbox.services.android.navigation.v5.routeprogress;
 
-import android.support.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 import com.mapbox.api.directions.v5.models.MaxSpeed;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 

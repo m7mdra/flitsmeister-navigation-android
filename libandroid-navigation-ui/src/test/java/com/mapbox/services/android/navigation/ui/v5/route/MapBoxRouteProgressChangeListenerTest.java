@@ -14,14 +14,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MapRouteProgressChangeListenerTest {
+public class MapBoxRouteProgressChangeListenerTest {
 
   @Test
   public void onProgressChange_newRouteWithEmptyDirectionsRouteList() {
     NavigationMapRoute mapRoute = mock(NavigationMapRoute.class);
     when(mapRoute.retrieveDirectionsRoutes()).thenReturn(Collections.emptyList());
     when(mapRoute.retrievePrimaryRouteIndex()).thenReturn(0);
-    MapRouteProgressChangeListener progressChangeListener = new MapRouteProgressChangeListener(mapRoute);
+    MapBoxRouteProgressChangeListener progressChangeListener = new MapBoxRouteProgressChangeListener(mapRoute);
     RouteProgress routeProgress = mock(RouteProgress.class);
     DirectionsRoute newRoute = mock(DirectionsRoute.class);
     when(routeProgress.directionsRoute()).thenReturn(newRoute);

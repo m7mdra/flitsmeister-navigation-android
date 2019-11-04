@@ -3,10 +3,11 @@ package com.mapbox.services.android.navigation.ui.v5.instruction.turnlane;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.mapbox.api.directions.v5.models.IntersectionLanes;
 import com.mapbox.services.android.navigation.ui.v5.R;

@@ -1,13 +1,14 @@
 package com.mapbox.services.android.navigation.ui.v5.summary.list;
 
 import android.content.res.Configuration;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.TextViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mapbox.services.android.navigation.ui.v5.R;
 import com.mapbox.services.android.navigation.ui.v5.instruction.maneuver.ManeuverView;

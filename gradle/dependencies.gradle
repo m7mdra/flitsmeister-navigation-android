@@ -2,13 +2,13 @@ ext {
 
   androidVersions = [
       minSdkVersion    : 14,
-      targetSdkVersion : 27,
-      compileSdkVersion: 27,
+      targetSdkVersion : 28,
+      compileSdkVersion: 28,
       buildToolsVersion: '28.0.3'
   ]
 
   version = [
-      mapboxMapSdk       : '6.5.0',
+      mapboxMapSdk       : '8.3.0',
       mapboxSdkServices  : '4.0.0',
       mapboxEvents       : '3.2.0',
       locationLayerPlugin: '0.8.1',
