@@ -8,6 +8,9 @@ import android.util.Log;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.squareup.leakcanary.LeakCanary;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import timber.log.Timber;
 
 public class NavigationApplication extends Application {
@@ -35,7 +38,24 @@ public class NavigationApplication extends Application {
       Log.w(LOG_TAG, "Warning: access token isn't set.");
     }
 
-    Mapbox.getInstance(getApplicationContext(), mapboxAccessToken);
+    Mapbox instance = Mapbox.getInstance(getApplicationContext(), mapboxAccessToken);
+    try {
+      Field telemetryField = Mapbox.class.getDeclaredField("telemetry");
+      telemetryField.setAccessible(true);
+      telemetryField.set(instance, null);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
+
+  static void setFinalStatic(Field field, Object newValue) throws Exception {
+    field.setAccessible(true);
+
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+    field.set(null, newValue);
+  }
 }

@@ -17,6 +17,7 @@ android {
         targetSdkVersion androidVersions.targetSdkVersion
         versionCode 1
         versionName "0.1"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,7 +42,9 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':libandroid-navigation-ui')
     // Flitsmeister Navigation SDK
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation project(':libandroid-navigation')
     implementation dependenciesList.mapboxMapSdk
     api dependenciesList.mapboxSdkCore

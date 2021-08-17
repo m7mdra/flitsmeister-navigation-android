@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MockNavigationActivity">
 
-    <com.mapbox.mapboxsdk.maps.MapView
+    <com.mapbox.services.android.navigation.testapp.CustomMapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

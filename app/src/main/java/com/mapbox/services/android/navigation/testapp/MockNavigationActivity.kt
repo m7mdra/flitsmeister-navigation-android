@@ -3,6 +3,7 @@ package com.mapbox.services.android.navigation.testapp
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,10 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.LineLayer
+import com.mapbox.mapboxsdk.style.layers.Property
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
+import com.mapbox.mapboxsdk.style.sources.VectorSource
 import com.mapbox.services.android.navigation.v5.instruction.Instruction
 import com.mapbox.services.android.navigation.v5.location.replay.ReplayRouteLocationEngine
 import com.mapbox.services.android.navigation.v5.milestone.*
@@ -131,6 +136,7 @@ class MockNavigationActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
+
         mapboxMap.setStyle(Style.Builder().fromUri(STYLE_URL)) { style ->
             enableLocationComponent(style)
         }
@@ -211,6 +217,7 @@ class MockNavigationActivity : AppCompatActivity(), OnMapReadyCallback,
             this.destination(destination)
             this.voiceUnits(DirectionsCriteria.METRIC)
             this.alternatives(true)
+            this.user("gh")
             this.baseUrl(BASE_URL)
         }
 
@@ -314,7 +321,7 @@ class MockNavigationActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     companion object{
-        private const val STYLE_URL = "YOUR STYLE URL HERE"
-        private const val BASE_URL = "YOUR BASE URL HERE"
+        private const val STYLE_URL = "https://api.maptiler.com/maps/streets/style.json?key=i6F3fJITHR6eHw1SJq9e"
+        private const val BASE_URL = "https://graphhopper.com/api/1/navigate/"
     }
 }
