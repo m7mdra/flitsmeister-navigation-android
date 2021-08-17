@@ -21,7 +21,7 @@ public class DynamicCamera extends SimpleCamera {
 
   private static final double MAX_CAMERA_TILT = 60d;
   private static final double MIN_CAMERA_TILT = 45d;
-  private static final double MAX_CAMERA_ZOOM = 16d;
+  private static final double MAX_CAMERA_ZOOM = 30d;
   private static final double MIN_CAMERA_ZOOM = 12d;
 
   private MapboxMap mapboxMap;
@@ -107,6 +107,9 @@ public class DynamicCamera extends SimpleCamera {
    */
   private double createZoom(RouteInformation routeInformation) {
     CameraPosition position = createCameraPosition(routeInformation.location(), routeInformation.routeProgress());
+    if (position == null) {
+      return DEFAULT_ZOOM;
+    }
     if (position.zoom > MAX_CAMERA_ZOOM) {
       return MAX_CAMERA_ZOOM;
     } else if (position.zoom < MIN_CAMERA_ZOOM) {

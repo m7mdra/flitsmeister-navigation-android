@@ -75,7 +75,7 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   private static final int CAMERA_ANIMATION_DURATION = 1000;
   private static final int DEFAULT_CAMERA_ZOOM = 16;
   private static final int CHANGE_SETTING_REQUEST_CODE = 1;
-  private static final int INITIAL_ZOOM = 16;
+  private static final int INITIAL_ZOOM = 30;
   private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
   private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
 
@@ -248,6 +248,8 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   private void fetchRoute() {
     NavigationRoute.Builder builder = NavigationRoute.builder(this)
       .accessToken(Mapbox.getAccessToken())
+      .baseUrl(getString(R.string.base_url))
+      .user("gh")
       .origin(currentLocation)
       .profile(getRouteProfileFromSharedPreferences())
       .alternatives(true);
@@ -340,6 +342,7 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
       .zoom(INITIAL_ZOOM)
       .build();
     optionsBuilder.initialMapCameraPosition(initialPosition);
+
     optionsBuilder.directionsRoute(route);
     String offlinePath = obtainOfflinePath();
 

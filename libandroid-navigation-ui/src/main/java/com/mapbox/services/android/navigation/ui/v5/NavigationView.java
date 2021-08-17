@@ -27,6 +27,7 @@ import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.MapboxConstants;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -292,13 +293,14 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
   }
 
   private void initializeNavigationMap(MapView mapView, MapboxMap map) {
+    if (initialMapCameraPosition != null) {
+      map.setCameraPosition(initialMapCameraPosition);
+    }
     navigationMap = new NavigationMapboxMap(mapView, map);
+    navigationMap.updateLocationLayerRenderMode(RenderMode.GPS);
     if (mapInstanceState != null) {
       navigationMap.restoreFrom(mapInstanceState);
       return;
-    }
-    if (initialMapCameraPosition != null) {
-      map.setCameraPosition(initialMapCameraPosition);
     }
   }
 

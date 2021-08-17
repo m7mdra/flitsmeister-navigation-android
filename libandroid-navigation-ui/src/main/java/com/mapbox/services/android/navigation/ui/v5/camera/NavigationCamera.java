@@ -20,6 +20,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.OnCameraTrackingChangedListener;
+import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
@@ -33,6 +34,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
 
@@ -50,15 +52,41 @@ import static com.mapbox.services.android.navigation.v5.navigation.NavigationCon
  */
 public class NavigationCamera implements LifecycleObserver {
 
+  /**
+   * Camera tracks the user location, with bearing provided by the location update.
+   * <p>
+   * Equivalent of the {@link CameraMode#TRACKING_GPS}.
+   */
+  public static final int NAVIGATION_TRACKING_MODE_GPS = 0;
+  /**
+   * Camera tracks the user location, with bearing always set to north (0).
+   * <p>
+   * Equivalent of the {@link CameraMode#TRACKING_GPS_NORTH}.
+   */
+  public static final int NAVIGATION_TRACKING_MODE_NORTH = 1;
+  /**
+   * Camera does not tack the user location.
+   * <p>
+   * Equivalent of the {@link CameraMode#NONE}.
+   */
+  public static final int NAVIGATION_TRACKING_MODE_NONE = 2;
   private static final int ONE_POINT = 1;
-
-  private final OnCameraTrackingChangedListener cameraTrackingChangedListener = new NavigationCameraTrackingChangedListener(this);
-
+  private final CopyOnWriteArrayList<OnTrackingModeTransitionListener> onTrackingModeTransitionListeners
+          = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<OnTrackingModeChangedListener> onTrackingModeChangedListeners
+          = new CopyOnWriteArrayList<>();
+  private final OnLocationCameraTransitionListener cameraTransitionListener
+          = new NavigationCameraTransitionListener(this);
+  private final OnCameraTrackingChangedListener cameraTrackingChangedListener
+          = new NavigationCameraTrackingChangedListener(this);
   private MapboxMap mapboxMap;
   private LocationComponent locationComponent;
   private MapboxNavigation navigation;
   private RouteInformation currentRouteInformation;
   private RouteProgress currentRouteProgress;
+  @TrackingMode
+  private int trackingCameraMode = NAVIGATION_TRACKING_MODE_GPS;
+  private boolean isCameraResetting;
   private CameraAnimationDelegate animationDelegate;
   private ProgressChangeListener progressChangeListener = new ProgressChangeListener() {
     @Override
@@ -66,42 +94,12 @@ public class NavigationCamera implements LifecycleObserver {
       currentRouteProgress = routeProgress;
       if (isTrackingEnabled()) {
         currentRouteInformation = buildRouteInformationFromLocation(location, routeProgress);
-        adjustCameraFromLocation(currentRouteInformation);
+        if (!isCameraResetting) {
+          adjustCameraFromLocation(currentRouteInformation);
+        }
       }
     }
   };
-
-  @Retention(RetentionPolicy.SOURCE)
-  @IntDef( {NAVIGATION_TRACKING_MODE_GPS,
-    NAVIGATION_TRACKING_MODE_NORTH,
-    NAVIGATION_TRACKING_MODE_NONE
-  })
-  public @interface TrackingMode {
-  }
-
-  /**
-   * Camera tracks the user location, with bearing provided by the location update.
-   * <p>
-   * Equivalent of the {@link CameraMode#TRACKING_GPS}.
-   */
-  public static final int NAVIGATION_TRACKING_MODE_GPS = 0;
-
-  /**
-   * Camera tracks the user location, with bearing always set to north (0).
-   * <p>
-   * Equivalent of the {@link CameraMode#TRACKING_GPS_NORTH}.
-   */
-  public static final int NAVIGATION_TRACKING_MODE_NORTH = 1;
-
-  /**
-   * Camera does not tack the user location.
-   * <p>
-   * Equivalent of the {@link CameraMode#NONE}.
-   */
-  public static final int NAVIGATION_TRACKING_MODE_NONE = 2;
-
-  @TrackingMode
-  private int trackingCameraMode = NAVIGATION_TRACKING_MODE_GPS;
 
   /**
    * Creates an instance of {@link NavigationCamera}.
@@ -114,8 +112,9 @@ public class NavigationCamera implements LifecycleObserver {
                           @NonNull LocationComponent locationComponent) {
     this.mapboxMap = mapboxMap;
     this.navigation = navigation;
-    this.animationDelegate = new CameraAnimationDelegate(mapboxMap);
     this.locationComponent = locationComponent;
+    this.animationDelegate = new CameraAnimationDelegate(mapboxMap);
+    this.locationComponent.addOnCameraTrackingChangedListener(cameraTrackingChangedListener);
     initializeWith(navigation);
   }
 
@@ -139,11 +138,12 @@ public class NavigationCamera implements LifecycleObserver {
    * Used for testing only.
    */
   NavigationCamera(MapboxMap mapboxMap, MapboxNavigation navigation, ProgressChangeListener progressChangeListener,
-                   LocationComponent locationComponent) {
+                   LocationComponent locationComponent, RouteInformation currentRouteInformation) {
     this.mapboxMap = mapboxMap;
     this.locationComponent = locationComponent;
     this.navigation = navigation;
     this.progressChangeListener = progressChangeListener;
+    this.currentRouteInformation = currentRouteInformation;
   }
 
   /**
@@ -176,21 +176,7 @@ public class NavigationCamera implements LifecycleObserver {
    * @param trackingMode the tracking mode
    */
   public void updateCameraTrackingMode(@TrackingMode int trackingMode) {
-    trackingCameraMode = trackingMode;
-    setCameraMode();
-  }
-
-  @Nullable
-  Integer findTrackingModeFor(@CameraMode.Mode int cameraMode) {
-    if (cameraMode == CameraMode.TRACKING_GPS) {
-      return NAVIGATION_TRACKING_MODE_GPS;
-    } else if (cameraMode == CameraMode.TRACKING_GPS_NORTH) {
-      return NAVIGATION_TRACKING_MODE_NORTH;
-    } else if (cameraMode == CameraMode.NONE) {
-      return NAVIGATION_TRACKING_MODE_NONE;
-    } else {
-      return null;
-    }
+    setCameraMode(trackingMode);
   }
 
   /**
@@ -221,14 +207,7 @@ public class NavigationCamera implements LifecycleObserver {
    * @param trackingMode the tracking mode
    */
   public void resetCameraPositionWith(@TrackingMode int trackingMode) {
-    updateCameraTrackingMode(trackingMode);
-    if (currentRouteInformation != null) {
-      Camera camera = navigation.getCameraEngine();
-      if (camera instanceof DynamicCamera) {
-        ((DynamicCamera) camera).forceResetZoomLevel();
-      }
-      adjustCameraFromLocation(currentRouteInformation);
-    }
+    resetWith(trackingMode);
   }
 
   /**
@@ -241,6 +220,57 @@ public class NavigationCamera implements LifecycleObserver {
     updateCameraTrackingMode(NAVIGATION_TRACKING_MODE_NONE);
     RouteInformation routeInformation = buildRouteInformationFromProgress(currentRouteProgress);
     animateCameraForRouteOverview(routeInformation, padding);
+  }
+
+  /**
+   * Animate the camera to a new location defined within {@link CameraUpdate} passed to the
+   * {@link NavigationCameraUpdate} using a transition animation that evokes powered flight.
+   * If the camera is in a tracking mode, this animation is going to be ignored, or break the tracking,
+   * based on the {@link CameraUpdateMode}.
+   *
+   * @param update the change that should be applied to the camera.
+   * @see CameraUpdateMode for how this update interacts with the current tracking
+   */
+  public void update(NavigationCameraUpdate update) {
+    animationDelegate.render(update, MapboxConstants.ANIMATION_DURATION, null);
+  }
+
+  /**
+   * Animate the camera to a new location defined within {@link CameraUpdate} passed to the
+   * {@link NavigationCameraUpdate} using a transition animation that evokes powered flight.
+   * The animation will last a specified amount of time given in milliseconds. If the camera is in a tracking mode,
+   * this animation is going to be ignored, or break the tracking, based on the {@link CameraUpdateMode}.
+   *
+   * @param update     the change that should be applied to the camera.
+   * @param durationMs the duration of the animation in milliseconds. This must be strictly
+   *                   positive, otherwise an IllegalArgumentException will be thrown.
+   * @see CameraUpdateMode for how this update interacts with the current tracking
+   */
+  public void update(NavigationCameraUpdate update, int durationMs) {
+    animationDelegate.render(update, durationMs, null);
+  }
+
+  /**
+   * Animate the camera to a new location defined within {@link CameraUpdate} passed to the
+   * {@link NavigationCameraUpdate} using a transition animation that evokes powered flight. The animation will
+   * last a specified amount of time given in milliseconds. A callback can be used to be notified when animating
+   * the camera stops. During the animation, a call to {@link MapboxMap#getCameraPosition()} returns an intermediate
+   * location of the camera in flight. If the camera is in a tracking mode,
+   * this animation is going to be ignored, or break the tracking, based on the {@link CameraUpdateMode}.
+   *
+   * @param update     the change that should be applied to the camera.
+   * @param durationMs the duration of the animation in milliseconds. This must be strictly
+   *                   positive, otherwise an IllegalArgumentException will be thrown.
+   * @param callback   an optional callback to be notified from the main thread when the animation
+   *                   stops. If the animation stops due to its natural completion, the callback
+   *                   will be notified with onFinish(). If the animation stops due to interruption
+   *                   by a later camera movement or a user gesture, onCancel() will be called.
+   *                   Do not update or animate the camera from within onCancel(). If a callback
+   *                   isn't required, leave it as null.
+   * @see CameraUpdateMode for how this update interacts with the current tracking
+   */
+  public void update(NavigationCameraUpdate update, int durationMs, @Nullable MapboxMap.CancelableCallback callback) {
+    animationDelegate.render(update, durationMs, callback);
   }
 
   /**
@@ -279,33 +309,82 @@ public class NavigationCamera implements LifecycleObserver {
     navigation.addProgressChangeListener(progressChangeListener);
   }
 
-
   /**
-   * Animate the camera to a new location defined within {@link CameraUpdate} passed to the
-   * {@link NavigationCameraUpdate} using a transition animation that evokes powered flight.
-   * If the camera is in a tracking mode, this animation is going to be ignored, or break the tracking,
-   * based on the {@link CameraUpdateMode}.
+   * Adds given tracking mode transition listener for receiving notification of camera
+   * transition updates.
    *
-   * @param update the change that should be applied to the camera.
-   * @see CameraUpdateMode for how this update interacts with the current tracking
+   * @param listener to be added
    */
-  public void update(NavigationCameraUpdate update) {
-    animationDelegate.render(update, MapboxConstants.ANIMATION_DURATION, null);
+  public void addOnTrackingModeTransitionListener(@NonNull OnTrackingModeTransitionListener listener) {
+    onTrackingModeTransitionListeners.add(listener);
   }
 
   /**
-   * Animate the camera to a new location defined within {@link CameraUpdate} passed to the
-   * {@link NavigationCameraUpdate} using a transition animation that evokes powered flight.
-   * The animation will last a specified amount of time given in milliseconds. If the camera is in a tracking mode,
-   * this animation is going to be ignored, or break the tracking, based on the {@link CameraUpdateMode}.
+   * Removes given tracking mode transition listener for receiving notification of camera
+   * transition updates.
    *
-   * @param update     the change that should be applied to the camera.
-   * @param durationMs the duration of the animation in milliseconds. This must be strictly
-   *                   positive, otherwise an IllegalArgumentException will be thrown.
-   * @see CameraUpdateMode for how this update interacts with the current tracking
+   * @param listener to be removed
    */
-  public void update(NavigationCameraUpdate update, int durationMs) {
-    animationDelegate.render(update, durationMs, null);
+  public void removeOnTrackingModeTransitionListener(@NonNull OnTrackingModeTransitionListener listener) {
+    onTrackingModeTransitionListeners.remove(listener);
+  }
+
+  /**
+   * Adds given tracking mode changed listener for receiving notification of camera
+   * mode changes.
+   *
+   * @param listener to be added
+   */
+  public void addOnTrackingModeChangedListener(@NonNull OnTrackingModeChangedListener listener) {
+    onTrackingModeChangedListeners.add(listener);
+  }
+
+  /**
+   * Removes given tracking mode transition listener for receiving notification of camera
+   * mode changes.
+   *
+   * @param listener to be removed
+   */
+  public void removeOnTrackingModeChangedListener(@NonNull OnTrackingModeChangedListener listener) {
+    onTrackingModeChangedListeners.remove(listener);
+  }
+
+  void updateTransitionListenersFinished(@CameraMode.Mode int cameraMode) {
+    onCameraTransitionFinished();
+    Integer trackingCameraMode = findTrackingModeFor(cameraMode);
+    if (trackingCameraMode == null) {
+      return;
+    }
+    for (OnTrackingModeTransitionListener listener : onTrackingModeTransitionListeners) {
+      listener.onTransitionFinished(trackingCameraMode);
+    }
+  }
+
+  void updateTransitionListenersCancelled(@CameraMode.Mode int cameraMode) {
+    Integer trackingCameraMode = findTrackingModeFor(cameraMode);
+    if (trackingCameraMode == null) {
+      return;
+    }
+    for (OnTrackingModeTransitionListener listener : onTrackingModeTransitionListeners) {
+      listener.onTransitionCancelled(trackingCameraMode);
+    }
+  }
+
+  @Nullable
+  Integer findTrackingModeFor(@CameraMode.Mode int cameraMode) {
+    if (cameraMode == CameraMode.TRACKING_GPS) {
+      return NAVIGATION_TRACKING_MODE_GPS;
+    } else if (cameraMode == CameraMode.TRACKING_GPS_NORTH) {
+      return NAVIGATION_TRACKING_MODE_NORTH;
+    } else if (cameraMode == CameraMode.NONE) {
+      return NAVIGATION_TRACKING_MODE_NONE;
+    } else {
+      return null;
+    }
+  }
+
+  void updateIsResetting(boolean isResetting) {
+    this.isCameraResetting = isResetting;
   }
 
   private void initializeWith(MapboxNavigation navigation) {
@@ -349,6 +428,12 @@ public class NavigationCamera implements LifecycleObserver {
     return RouteInformation.create(routeProgress.directionsRoute(), null, null);
   }
 
+  private void onCameraTransitionFinished() {
+    if (isCameraResetting && currentRouteInformation != null) {
+      adjustCameraForReset(currentRouteInformation);
+    }
+  }
+
   private void animateCameraForRouteOverview(RouteInformation routeInformation, int[] padding) {
     Camera cameraEngine = navigation.getCameraEngine();
     List<Point> routePoints = cameraEngine.overview(routeInformation);
@@ -364,7 +449,7 @@ public class NavigationCamera implements LifecycleObserver {
     CameraUpdate resetUpdate = buildResetCameraUpdate();
     final CameraUpdate overviewUpdate = buildOverviewCameraUpdate(padding, routePoints);
     mapboxMap.animateCamera(resetUpdate, 150,
-      new CameraOverviewCancelableCallback(overviewUpdate, mapboxMap)
+            new CameraOverviewCancelableCallback(overviewUpdate, mapboxMap)
     );
   }
 
@@ -378,7 +463,7 @@ public class NavigationCamera implements LifecycleObserver {
   private CameraUpdate buildOverviewCameraUpdate(int[] padding, List<Point> routePoints) {
     final LatLngBounds routeBounds = convertRoutePointsToLatLngBounds(routePoints);
     return CameraUpdateFactory.newLatLngBounds(
-      routeBounds, padding[0], padding[1], padding[2], padding[3]
+            routeBounds, padding[0], padding[1], padding[2], padding[3]
     );
   }
 
@@ -388,39 +473,66 @@ public class NavigationCamera implements LifecycleObserver {
       latLngs.add(new LatLng(routePoint.latitude(), routePoint.longitude()));
     }
     return new LatLngBounds.Builder()
-      .includes(latLngs)
-      .build();
+            .includes(latLngs)
+            .build();
   }
 
-  private void setCameraMode() {
-    @CameraMode.Mode int mode;
-    if (trackingCameraMode == NAVIGATION_TRACKING_MODE_GPS) {
-      mode = CameraMode.TRACKING_GPS;
-    } else if (trackingCameraMode == NAVIGATION_TRACKING_MODE_NORTH) {
-      mode = CameraMode.TRACKING_GPS_NORTH;
-    } else if (trackingCameraMode == NAVIGATION_TRACKING_MODE_NONE) {
-      mode = CameraMode.NONE;
+  private void setCameraMode(@TrackingMode int trackingCameraMode) {
+    @CameraMode.Mode Integer cameraMode = findCameraModeFor(trackingCameraMode);
+    if (cameraMode != null) {
+      this.trackingCameraMode = trackingCameraMode;
+      updateTrackingModeListenersWith(this.trackingCameraMode);
+      if (cameraMode != locationComponent.getCameraMode()) {
+        locationComponent.setCameraMode(cameraMode, cameraTransitionListener);
+      }
     } else {
-      mode = CameraMode.NONE;
       Timber.e("Using unsupported camera tracking mode - %d.", trackingCameraMode);
     }
+  }
 
-    if (mode != locationComponent.getCameraMode()) {
-      locationComponent.setCameraMode(mode);
+  @Nullable
+  private Integer findCameraModeFor(@TrackingMode int trackingCameraMode) {
+    if (trackingCameraMode == NAVIGATION_TRACKING_MODE_GPS) {
+      return CameraMode.TRACKING_GPS;
+    } else if (trackingCameraMode == NAVIGATION_TRACKING_MODE_NORTH) {
+      return CameraMode.TRACKING_GPS_NORTH;
+    } else if (trackingCameraMode == NAVIGATION_TRACKING_MODE_NONE) {
+      return CameraMode.NONE;
+    } else {
+      return null;
     }
   }
 
-  /**
-   * Updates the camera's zoom and tilt while tracking.
-   *
-   * @param routeInformation with location data
-   */
+  private void updateTrackingModeListenersWith(@TrackingMode int trackingMode) {
+    for (OnTrackingModeChangedListener listener : onTrackingModeChangedListeners) {
+      listener.onTrackingModeChanged(trackingMode);
+    }
+  }
+
+  private void resetWith(@TrackingMode int trackingMode) {
+    updateIsResetting(true);
+    resetDynamicCamera(navigation.getCameraEngine());
+    updateCameraTrackingMode(trackingMode);
+  }
+
+  private void resetDynamicCamera(Camera camera) {
+    if (camera instanceof DynamicCamera) {
+      ((DynamicCamera) camera).forceResetZoomLevel();
+    }
+  }
+
+  private void adjustCameraForReset(RouteInformation routeInformation) {
+    Camera camera = navigation.getCameraEngine();
+    float tilt = (float) camera.tilt(routeInformation);
+    double zoom = camera.zoom(routeInformation);
+    locationComponent.zoomWhileTracking(zoom, getZoomAnimationDuration(zoom), new ResetCancelableCallback(this));
+    locationComponent.tiltWhileTracking(tilt, getTiltAnimationDuration(tilt));
+  }
+
   private void adjustCameraFromLocation(RouteInformation routeInformation) {
-    Camera cameraEngine = navigation.getCameraEngine();
-
-    float tilt = (float) cameraEngine.tilt(routeInformation);
-    double zoom = cameraEngine.zoom(routeInformation);
-
+    Camera camera = navigation.getCameraEngine();
+    float tilt = (float) camera.tilt(routeInformation);
+    double zoom = camera.zoom(routeInformation);
     locationComponent.zoomWhileTracking(zoom, getZoomAnimationDuration(zoom));
     locationComponent.tiltWhileTracking(tilt, getTiltAnimationDuration(tilt));
   }
@@ -428,16 +540,24 @@ public class NavigationCamera implements LifecycleObserver {
   private long getZoomAnimationDuration(double zoom) {
     double zoomDiff = Math.abs(mapboxMap.getCameraPosition().zoom - zoom);
     return (long) MathUtils.clamp(
-      500 * zoomDiff,
-      NAVIGATION_MIN_CAMERA_ZOOM_ADJUSTMENT_ANIMATION_DURATION,
-      NAVIGATION_MAX_CAMERA_ADJUSTMENT_ANIMATION_DURATION);
+            500 * zoomDiff,
+            NAVIGATION_MIN_CAMERA_ZOOM_ADJUSTMENT_ANIMATION_DURATION,
+            NAVIGATION_MAX_CAMERA_ADJUSTMENT_ANIMATION_DURATION);
   }
 
   private long getTiltAnimationDuration(double tilt) {
     double tiltDiff = Math.abs(mapboxMap.getCameraPosition().tilt - tilt);
     return (long) MathUtils.clamp(
-      500 * tiltDiff,
-      NAVIGATION_MIN_CAMERA_TILT_ADJUSTMENT_ANIMATION_DURATION,
-      NAVIGATION_MAX_CAMERA_ADJUSTMENT_ANIMATION_DURATION);
+            500 * tiltDiff,
+            NAVIGATION_MIN_CAMERA_TILT_ADJUSTMENT_ANIMATION_DURATION,
+            NAVIGATION_MAX_CAMERA_ADJUSTMENT_ANIMATION_DURATION);
+  }
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef( {NAVIGATION_TRACKING_MODE_GPS,
+          NAVIGATION_TRACKING_MODE_NORTH,
+          NAVIGATION_TRACKING_MODE_NONE
+  })
+  public @interface TrackingMode {
   }
 }

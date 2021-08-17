@@ -21,6 +21,7 @@ import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.OnCameraTrackingChangedListener;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -31,6 +32,7 @@ import com.mapbox.mapboxsdk.style.sources.VectorSource;
 import com.mapbox.services.android.navigation.ui.v5.NavigationSnapshotReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.R;
 import com.mapbox.services.android.navigation.ui.v5.ThemeSwitcher;
+import com.mapbox.services.android.navigation.ui.v5.camera.CameraUpdateMode;
 import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
@@ -83,6 +85,7 @@ public class NavigationMapboxMap {
   private final MapWayNameChangedListener internalWayNameChangedListener = new MapWayNameChangedListener(onWayNameChangedListeners);
 
   private MapboxMap mapboxMap;
+  private MapView mapView;
   private NavigationMapSettings settings = new NavigationMapSettings();
   private NavigationCamera mapCamera;
   private NavigationMapRoute mapRoute;
@@ -106,6 +109,7 @@ public class NavigationMapboxMap {
    */
   public NavigationMapboxMap(@NonNull MapView mapView, @NonNull MapboxMap mapboxMap) {
     this.mapboxMap = mapboxMap;
+    this.mapView = mapView;
     initializeLocationComponent(mapView, mapboxMap);
     initializeMapPaddingAdjustor(mapView, mapboxMap);
     initializeMapLayerInteractor(mapboxMap);
@@ -204,9 +208,11 @@ public class NavigationMapboxMap {
    * @param navigation to add the progress listeners
    */
   public void addProgressChangeListener(MapboxNavigation navigation) {
+    initializeFpsDelegate(mapView);
     mapRoute.addProgressChangeListener(navigation);
     mapCamera.addProgressChangeListener(navigation);
     mapWayName.addProgressChangeListener(navigation);
+    mapFpsDelegate.addProgressChangeListener(navigation);
   }
 
   /**
@@ -414,6 +420,8 @@ public class NavigationMapboxMap {
     mapCamera.onStart();
     mapRoute.onStart();
     mapWayName.onStart();
+    handleFpsOnStart();
+    locationFpsDelegate.onStart();
   }
 
   /**
@@ -424,6 +432,8 @@ public class NavigationMapboxMap {
     mapCamera.onStop();
     mapRoute.onStop();
     mapWayName.onStop();
+    handleFpsOnStop();
+    locationFpsDelegate.onStop();
   }
 
   /**
@@ -648,6 +658,41 @@ public class NavigationMapboxMap {
   private void removeAllMarkers() {
     for (Marker marker : mapMarkers) {
       mapboxMap.removeMarker(marker);
+    }
+  }
+
+  private void initializeFpsDelegate(MapView mapView) {
+    if (mapFpsDelegate != null) {
+      return;
+    }
+    MapBatteryMonitor batteryMonitor = new MapBatteryMonitor();
+    mapFpsDelegate = new MapFpsDelegate(mapView, batteryMonitor);
+    mapFpsDelegate.updateEnabled(settings.isMaxFpsEnabled());
+    mapFpsDelegate.updateMaxFpsThreshold(settings.retrieveMaxFps());
+    addFpsListenersToCamera();
+  }
+
+  private void addFpsListenersToCamera() {
+    mapCamera.addOnTrackingModeTransitionListener(mapFpsDelegate);
+    mapCamera.addOnTrackingModeChangedListener(mapFpsDelegate);
+  }
+
+  private void removeFpsListenersFromCamera() {
+    mapCamera.removeOnTrackingModeTransitionListener(mapFpsDelegate);
+    mapCamera.removeOnTrackingModeChangedListener(mapFpsDelegate);
+  }
+
+  private void handleFpsOnStart() {
+    if (mapFpsDelegate != null) {
+      mapFpsDelegate.onStart();
+      addFpsListenersToCamera();
+    }
+  }
+
+  private void handleFpsOnStop() {
+    if (mapFpsDelegate != null) {
+      mapFpsDelegate.onStop();
+      removeFpsListenersFromCamera();
     }
   }
 }
