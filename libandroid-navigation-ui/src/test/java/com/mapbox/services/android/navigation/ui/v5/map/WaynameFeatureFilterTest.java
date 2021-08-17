@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 import static okhttp3.internal.Util.UTF_8;
 import static org.mockito.Mockito.mock;

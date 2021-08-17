@@ -7,12 +7,12 @@ import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 
 import org.junit.Test;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
 
 public class MapRouteProgressChangeListenerTest {
 

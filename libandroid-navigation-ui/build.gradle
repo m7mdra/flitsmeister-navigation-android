@@ -20,9 +20,9 @@ android {
     consumerProguardFiles 'proguard-consumer.pro'
   }
 
-//  configurations {
-//    javadocDeps
-//  }
+  configurations {
+    javadocDeps
+  }
 
   buildTypes {
     debug {
@@ -34,15 +34,10 @@ android {
   lintOptions {
     abortOnError false
   }
-//  testOptions {
-//    unitTests.returnDefaultValues = true
-//    unitTests.includeAndroidResources = true
-//    unitTests.all {
-//      jacoco {
-//        includeNoLocationClasses = true
-//      }
-//    }
-//  }
+  testOptions {
+    unitTests.returnDefaultValues = true
+    unitTests.includeAndroidResources = true
+  }
 }
 
 dependencies {
@@ -72,18 +67,15 @@ dependencies {
   // Picasso
   implementation dependenciesList.picasso
 
-  // Mapbox Map SDK Javadoc
-//  javadocDeps dependenciesList.mapboxMapSdk
-
   // Unit testing
   testImplementation dependenciesList.junit
   testImplementation dependenciesList.mockito
   testImplementation dependenciesList.robolectric
 }
 
-//apply from: 'javadoc.gradle'
+apply from: 'javadoc.gradle'
 //apply from: "${rootDir}/gradle/mvn-push-android.gradle"
 //apply from: "${rootDir}/gradle/checkstyle.gradle"
-//apply from: "${rootDir}/gradle/jacoco.gradle"
+apply from: "${rootDir}/gradle/jacoco.gradle"
 //apply from: "${rootDir}/gradle/dependencies-graph.gradle"
 //apply from: "${rootDir}/gradle/dependency-updates.gradle"

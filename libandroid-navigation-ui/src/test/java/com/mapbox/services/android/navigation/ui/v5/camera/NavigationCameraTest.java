@@ -1,9 +1,11 @@
 package com.mapbox.services.android.navigation.ui.v5.camera;
 
 import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
+import com.mapbox.services.android.navigation.v5.navigation.camera.RouteInformation;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 
 import org.junit.Test;
@@ -11,6 +13,8 @@ import org.junit.Test;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,14 +33,18 @@ public class NavigationCameraTest {
     LocationComponent locationComponent = mock(LocationComponent.class);
     NavigationCamera camera = buildCamera(locationComponent);
 
-    verify(locationComponent, times(1)).setCameraMode(CameraMode.TRACKING_GPS);
-    verify(locationComponent, times(0)).setCameraMode(CameraMode.NONE);
+    verify(locationComponent, times(1)).setCameraMode(eq(CameraMode.TRACKING_GPS),
+            any(OnLocationCameraTransitionListener.class));
+    verify(locationComponent, times(0)).setCameraMode(eq(CameraMode.NONE),
+            any(OnLocationCameraTransitionListener.class));
 
     camera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_NONE);
-    verify(locationComponent, times(1)).setCameraMode(CameraMode.NONE);
+    verify(locationComponent, times(1)).setCameraMode(eq(CameraMode.NONE),
+            any(OnLocationCameraTransitionListener.class));
 
     camera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS);
-    verify(locationComponent, times(2)).setCameraMode(CameraMode.TRACKING_GPS);
+    verify(locationComponent, times(2)).setCameraMode(eq(CameraMode.TRACKING_GPS),
+            any(OnLocationCameraTransitionListener.class));
 
     assertTrue(camera.isTrackingEnabled());
   }
@@ -46,14 +54,18 @@ public class NavigationCameraTest {
     LocationComponent locationComponent = mock(LocationComponent.class);
     NavigationCamera camera = buildCamera(locationComponent);
 
-    verify(locationComponent, times(1)).setCameraMode(CameraMode.TRACKING_GPS);
-    verify(locationComponent, times(0)).setCameraMode(CameraMode.NONE);
+    verify(locationComponent, times(1)).setCameraMode(eq(CameraMode.TRACKING_GPS),
+            any(OnLocationCameraTransitionListener.class));
+    verify(locationComponent, times(0)).setCameraMode(eq(CameraMode.NONE),
+            any(OnLocationCameraTransitionListener.class));
 
     camera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_GPS);
-    verify(locationComponent, times(2)).setCameraMode(CameraMode.TRACKING_GPS);
+    verify(locationComponent, times(2)).setCameraMode(eq(CameraMode.TRACKING_GPS),
+            any(OnLocationCameraTransitionListener.class));
 
     camera.updateCameraTrackingMode(NavigationCamera.NAVIGATION_TRACKING_MODE_NONE);
-    verify(locationComponent, times(1)).setCameraMode(CameraMode.NONE);
+    verify(locationComponent, times(1)).setCameraMode(eq(CameraMode.NONE),
+            any(OnLocationCameraTransitionListener.class));
 
     assertFalse(camera.isTrackingEnabled());
   }
@@ -99,6 +111,13 @@ public class NavigationCameraTest {
   }
 
   private NavigationCamera buildCamera(MapboxNavigation navigation, ProgressChangeListener listener) {
-    return new NavigationCamera(mock(MapboxMap.class), navigation, listener, mock(LocationComponent.class));
+    return new NavigationCamera(mock(MapboxMap.class), navigation, listener,
+            mock(LocationComponent.class), mock(RouteInformation.class));
+  }
+
+  private NavigationCamera buildCamera(MapboxMap mapboxMap, MapboxNavigation navigation,
+                                       RouteInformation routeInformation) {
+    return new NavigationCamera(mapboxMap, navigation, mock(ProgressChangeListener.class),
+            mock(LocationComponent.class), routeInformation);
   }
 }

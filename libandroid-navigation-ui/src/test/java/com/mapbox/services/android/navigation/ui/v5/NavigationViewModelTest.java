@@ -7,6 +7,7 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
