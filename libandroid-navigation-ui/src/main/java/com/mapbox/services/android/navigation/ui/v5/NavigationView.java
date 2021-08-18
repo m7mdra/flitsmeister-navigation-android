@@ -229,13 +229,10 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
    */
   @Override
   public void onMapReady(final MapboxMap mapboxMap) {
-    mapboxMap.setStyle(new Style.Builder().fromUri("https://api.maptiler.com/maps/streets/style.json?key=i6F3fJITHR6eHw1SJq9e"), new Style.OnStyleLoaded() {
-      @Override
-      public void onStyleLoaded(@NonNull Style style) {
-        initializeNavigationMap(mapView, mapboxMap);
-        onNavigationReadyCallback.onNavigationReady(navigationViewModel.isRunning());
-        isMapInitialized = true;
-      }
+    mapboxMap.setStyle(new Style.Builder().fromUri(getContext().getString(R.string.map_view_styleUrl)), style -> {
+      initializeNavigationMap(mapView, mapboxMap);
+      onNavigationReadyCallback.onNavigationReady(navigationViewModel.isRunning());
+      isMapInitialized = true;
     });
   }
 

@@ -628,15 +628,15 @@ public class NavigationMapboxMap {
   }
 
   private void initializeStreetsSource(MapboxMap mapboxMap) {
-    VectorSource streetSource = new VectorSource(STREETS_SOURCE_ID, MAPBOX_STREETS_V7);
-    mapboxMap.getStyle().addSource(streetSource);
-    LineLayer streetsLayer = new LineLayer(STREETS_LAYER_ID, STREETS_SOURCE_ID)
-      .withProperties(
-        lineWidth(DEFAULT_WIDTH),
-        lineColor(Color.WHITE)
-      )
-      .withSourceLayer(ROAD_LABEL);
-    mapboxMap.getStyle().addLayerAt(streetsLayer, LAST_INDEX);
+//    VectorSource streetSource = new VectorSource(STREETS_SOURCE_ID, MAPBOX_STREETS_V7);
+//    mapboxMap.getStyle().addSource(streetSource);
+//    LineLayer streetsLayer = new LineLayer(STREETS_LAYER_ID, STREETS_SOURCE_ID)
+//      .withProperties(
+//        lineWidth(DEFAULT_WIDTH),
+//        lineColor(Color.WHITE)
+//      )
+//      .withSourceLayer(ROAD_LABEL);
+//    mapboxMap.getStyle().addLayerAt(streetsLayer, LAST_INDEX);
   }
 
   private void initializeRoute(MapView mapView, MapboxMap map) {

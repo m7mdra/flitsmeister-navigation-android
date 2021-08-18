@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="map_view_styleUrl" translatable="false">YOUR_STYLE_URL</string>
+
     <!-- Indicates that rerouting is in progress -->
     <string name="rerouting">Rerouting…</string>
 

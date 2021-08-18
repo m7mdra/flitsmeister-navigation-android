@@ -186,7 +186,7 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   @Override
   public void onMapReady(@NotNull MapboxMap mapboxMap) {
     NavigationLauncherActivity activity = this;
-    mapboxMap.setStyle(new Style.Builder().fromUri("https://api.maptiler.com/maps/streets/style.json?key=i6F3fJITHR6eHw1SJq9e"), style -> {
+    mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_styleUrl)), style -> {
       mapboxMap.addOnMapLongClickListener(activity);
       map = new NavigationMapboxMap(mapView, mapboxMap);
       map.setOnRouteSelectionChangeListener(activity);
