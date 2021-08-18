@@ -8,7 +8,8 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:showIn="@layout/instruction_view_layout">
+    tools:showIn="@layout/instruction_view_layout"
+    tools:ignore="MissingDefaultResource">
 
     <LinearLayout
         android:id="@+id/instructionManeuverLayout"

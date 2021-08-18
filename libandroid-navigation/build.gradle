@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(javaVersion)
   }
 }
 

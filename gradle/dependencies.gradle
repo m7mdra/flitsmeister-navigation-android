@@ -1,5 +1,7 @@
 ext {
 
+    javaVersion = 11
+
     androidVersions = [
             minSdkVersion    : 15,
             targetSdkVersion : 30,
