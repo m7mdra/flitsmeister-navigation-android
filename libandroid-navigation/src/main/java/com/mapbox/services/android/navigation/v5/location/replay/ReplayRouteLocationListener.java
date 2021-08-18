@@ -2,8 +2,9 @@ package com.mapbox.services.android.navigation.v5.location.replay;
 
 import android.location.Location;
 
-import com.mapbox.android.core.location.LocationEngineCallback;
-import com.mapbox.android.core.location.LocationEngineResult;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineResult;
+
 
 class ReplayRouteLocationListener implements ReplayLocationListener {
 

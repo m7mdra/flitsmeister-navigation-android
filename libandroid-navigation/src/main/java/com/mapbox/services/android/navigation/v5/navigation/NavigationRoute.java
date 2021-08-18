@@ -20,6 +20,7 @@ import com.mapbox.core.utils.TextUtils;
 import com.mapbox.geojson.Point;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Interceptor;
@@ -368,7 +369,7 @@ public final class NavigationRoute {
          * @return this builder for chaining options together
          * @since 0.5.0
          */
-        public Builder radiuses(@FloatRange(from = 0) double... radiuses) {
+        public Builder radiuses(@NonNull List<Double> radiuses) {
             directionsBuilder.radiuses(radiuses);
             return this;
         }

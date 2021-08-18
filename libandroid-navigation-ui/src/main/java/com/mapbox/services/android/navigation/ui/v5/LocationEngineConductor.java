@@ -1,12 +1,10 @@
 package com.mapbox.services.android.navigation.ui.v5;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Location;
 
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.mapboxsdk.location.engine.LocationEngine;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineProvider;
 import com.mapbox.services.android.navigation.v5.location.replay.ReplayRouteLocationEngine;
 
 public class LocationEngineConductor {

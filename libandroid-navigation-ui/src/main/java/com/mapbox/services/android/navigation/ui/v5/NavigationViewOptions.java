@@ -5,9 +5,9 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.auto.value.AutoValue;
-import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.mapboxsdk.location.engine.LocationEngine;
 import com.mapbox.services.android.navigation.ui.v5.listeners.BannerInstructionsListener;
 import com.mapbox.services.android.navigation.ui.v5.listeners.FeedbackListener;
 import com.mapbox.services.android.navigation.ui.v5.listeners.InstructionListListener;

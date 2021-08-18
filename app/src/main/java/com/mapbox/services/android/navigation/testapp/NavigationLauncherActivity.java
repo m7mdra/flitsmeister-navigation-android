@@ -18,11 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineCallback;
-import com.mapbox.android.core.location.LocationEngineProvider;
-import com.mapbox.android.core.location.LocationEngineRequest;
-import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -37,6 +32,11 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.exceptions.InvalidLatLngBoundsException;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.location.engine.LocationEngine;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineProvider;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineRequest;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineResult;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -75,7 +75,7 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   private static final int CAMERA_ANIMATION_DURATION = 1000;
   private static final int DEFAULT_CAMERA_ZOOM = 16;
   private static final int CHANGE_SETTING_REQUEST_CODE = 1;
-  private static final int INITIAL_ZOOM = 30;
+  private static final int INITIAL_ZOOM = 25;
   private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
   private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 500;
 

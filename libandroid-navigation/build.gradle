@@ -52,10 +52,13 @@ android {
 }
 
 dependencies {
-  api dependenciesList.mapboxSdkCore
+//  api dependenciesList.mapboxSdkCore
   api dependenciesList.mapboxSdkServices
   api dependenciesList.mapboxSdkTurf
-  implementation dependenciesList.mapboxMapSdk
+  implementation(dependenciesList.mapboxMapSdk) {
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-geojson'
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
+  }
 
   // Support
   implementation dependenciesList.supportAppcompatV7

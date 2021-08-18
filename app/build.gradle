@@ -46,8 +46,10 @@ dependencies {
     // Flitsmeister Navigation SDK
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation project(':libandroid-navigation')
-    implementation dependenciesList.mapboxMapSdk
-    api dependenciesList.mapboxSdkCore
+    implementation(dependenciesList.mapboxMapSdk) {
+        exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-geojson'
+        exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
+    }
 
     // Support libraries
     implementation dependenciesList.supportAppcompatV7

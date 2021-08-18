@@ -6,11 +6,11 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineCallback;
-import com.mapbox.android.core.location.LocationEngineRequest;
-import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.mapboxsdk.location.engine.LocationEngine;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineRequest;
+import com.mapbox.mapboxsdk.location.engine.LocationEngineResult;
 import com.mapbox.services.android.navigation.v5.utils.RouteUtils;
 
 class NavigationLocationEngineUpdater {

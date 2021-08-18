@@ -47,7 +47,10 @@ dependencies {
   api project(':libandroid-navigation')
 
   // Mapbox Map SDK
-  implementation dependenciesList.mapboxMapSdk
+  implementation(dependenciesList.mapboxMapSdk) {
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-geojson'
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
+  }
 
   // Support libraries
   implementation dependenciesList.supportDesign

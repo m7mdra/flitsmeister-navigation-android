@@ -12,12 +12,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.text.TextUtils;
 
-import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.directions.v5.models.BannerInstructions;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.location.engine.LocationEngine;
 import com.mapbox.services.android.navigation.ui.v5.camera.DynamicCamera;
 import com.mapbox.services.android.navigation.ui.v5.feedback.FeedbackItem;
 import com.mapbox.services.android.navigation.ui.v5.instruction.BannerInstructionModel;

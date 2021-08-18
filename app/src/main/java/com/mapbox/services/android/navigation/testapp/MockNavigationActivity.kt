@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -13,8 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.mapbox.android.core.location.LocationEngineCallback
-import com.mapbox.android.core.location.LocationEngineResult
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.api.directions.v5.models.DirectionsRoute
@@ -25,6 +22,8 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback
+import com.mapbox.mapboxsdk.location.engine.LocationEngineResult
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
