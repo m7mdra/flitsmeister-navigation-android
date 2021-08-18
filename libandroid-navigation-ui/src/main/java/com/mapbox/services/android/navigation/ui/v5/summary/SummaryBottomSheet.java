@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.mapbox.services.android.navigation.ui.v5.ContextHelper;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewModel;
 import com.mapbox.services.android.navigation.ui.v5.R;
 import com.mapbox.services.android.navigation.ui.v5.ThemeSwitcher;
@@ -72,7 +73,7 @@ public class SummaryBottomSheet extends FrameLayout {
   }
 
   public void subscribe(NavigationViewModel navigationViewModel) {
-    navigationViewModel.summaryModel.observe((LifecycleOwner) getContext(), new Observer<SummaryModel>() {
+    navigationViewModel.summaryModel.observe((LifecycleOwner) ContextHelper.getFragmentActivity(getContext()), new Observer<SummaryModel>() {
       @Override
       public void onChanged(@Nullable SummaryModel summaryModel) {
         if (summaryModel != null && !isRerouting) {
@@ -82,16 +83,13 @@ public class SummaryBottomSheet extends FrameLayout {
         }
       }
     });
-    navigationViewModel.isOffRoute.observe((LifecycleOwner) getContext(), new Observer<Boolean>() {
-      @Override
-      public void onChanged(@Nullable Boolean isOffRoute) {
-        if (isOffRoute != null) {
-          isRerouting = isOffRoute;
-          if (isRerouting) {
-            showRerouteState();
-          } else {
-            hideRerouteState();
-          }
+    navigationViewModel.isOffRoute.observe((LifecycleOwner) ContextHelper.getFragmentActivity(getContext()), isOffRoute -> {
+      if (isOffRoute != null) {
+        isRerouting = isOffRoute;
+        if (isRerouting) {
+          showRerouteState();
+        } else {
+          hideRerouteState();
         }
       }
     });

@@ -33,6 +33,7 @@ import com.mapbox.api.directions.v5.models.BannerComponents;
 import com.mapbox.api.directions.v5.models.BannerInstructions;
 import com.mapbox.api.directions.v5.models.BannerText;
 import com.mapbox.api.directions.v5.models.LegStep;
+import com.mapbox.services.android.navigation.ui.v5.ContextHelper;
 import com.mapbox.services.android.navigation.ui.v5.FeedbackButton;
 import com.mapbox.services.android.navigation.ui.v5.NavigationButton;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewModel;
@@ -180,7 +181,7 @@ public class InstructionView extends RelativeLayout implements FeedbackBottomShe
    */
   public void subscribe(NavigationViewModel navigationViewModel) {
     this.navigationViewModel = navigationViewModel;
-    LifecycleOwner owner = (LifecycleOwner) getContext();
+    LifecycleOwner owner = (LifecycleOwner) ContextHelper.getFragmentActivity(getContext());
     navigationViewModel.instructionModel.observe(owner, new Observer<InstructionModel>() {
       @Override
       public void onChanged(@Nullable InstructionModel model) {
