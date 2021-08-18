@@ -5,7 +5,7 @@ package com.mapbox.services.android.navigation.ui.v5.map;
  * {@link NavigationMapboxMap#addOnWayNameChangedListener(OnWayNameChangedListener)}.
  * <p>
  * This listener is triggered when a new way name is found along the route.  It will be triggered
- * regardless of the map way name visibility ({@link NavigationMapboxMap#updateWaynameVisibility(boolean)}).
+ * regardless of the map way name visibility.
  * This is so you can hide our implementation of the way name UI and update your own if you'd like.
  */
 public interface OnWayNameChangedListener {

@@ -13,8 +13,8 @@ import java.util.List;
  * Given to the constructor of {@link NavigationSpeechPlayer}, this class decides which
  * {@link SpeechPlayer} should be used based on voice language compatibility.
  * <p>
- * If the given {@link DirectionsRoute#voiceLanguage()} is not <tt>null</tt>, this means the language is
- * supported by the Mapbox Voice API, which can parse SSML.  The boolean <tt>voiceLanguageSupported</tt> should
+ * If the given {@link DirectionsRoute#voiceLanguage()} is not <code>null</code>, this means the language is
+ * supported by the Mapbox Voice API, which can parse SSML.  The boolean <code>voiceLanguageSupported</code> should
  * be try in this case.
  * <p>
  * If false, an instance of {@link MapboxSpeechPlayer} will never be provided to the {@link NavigationSpeechPlayer}.
@@ -34,7 +34,7 @@ public class SpeechPlayerProvider {
    *
    * @param context                for the initialization of the speech players
    * @param language               to be used
-   * @param voiceLanguageSupported true if <tt>voiceLanguage</tt> is not null, false otherwise
+   * @param voiceLanguageSupported true if <code>voiceLanguage</code> is not null, false otherwise
    * @param voiceInstructionLoader voice instruction loader
    */
   public SpeechPlayerProvider(@NonNull Context context, String language,

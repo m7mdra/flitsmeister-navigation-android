@@ -42,27 +42,6 @@ subprojects {
   apply plugin: 'net.ltgt.errorprone'
   apply from: "${rootDir}/gradle/dependencies.gradle"
 
-  pluginManager.withPlugin('com.android.library') {
-    apply plugin: 'maven-publish'
-
-    task sourceJar(type: Jar) {
-      classifier 'sources'
-      from android.sourceSets.main.java.srcDirs
-    }
-
-    publishing {
-      publications {
-        bar(MavenPublication) {
-          groupId = project.group
-          artifactId = project.name
-          version = project.version
-          artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
-          artifact tasks.sourceJar
-        }
-      }
-    }
-  }
-
   dependencies {
     errorprone dependenciesList.errorprone
   }

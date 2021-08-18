@@ -143,7 +143,7 @@ public class NavigationMapboxMap {
    * Adds a marker icon on the map at the given position.
    * <p>
    * The icon used for this method can be defined in your theme with
-   * the attribute <tt>navigationViewDestinationMarker</tt>.
+   * the attribute <code>navigationViewDestinationMarker</code>.
    *
    * @param context  to retrieve the icon drawable from the theme
    * @param position the point at which the marker will be placed
@@ -240,7 +240,7 @@ public class NavigationMapboxMap {
    * This cannot be called in {@link FragmentActivity#onRestoreInstanceState(Bundle)}
    * because we cannot guarantee the map is re-initialized at that point.
    * <p>
-   * You can extract the {@link NavigationMapboxMapInstanceState} in <tt>onRestoreInstanceState</tt> and then
+   * You can extract the {@link NavigationMapboxMapInstanceState} in <code>onRestoreInstanceState</code> and then
    * restore the map once it's ready.
    *
    * @param instanceState to extract state variables
