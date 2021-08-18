@@ -1,5 +1,6 @@
 package com.mapbox.services.android.navigation.testapp
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.mapbox.android.core.location.LocationEngineCallback
+import com.mapbox.android.core.location.LocationEngineResult
 import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.api.directions.v5.models.DirectionsRoute
@@ -45,6 +48,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
 class MockNavigationActivity : AppCompatActivity(), OnMapReadyCallback,
@@ -192,50 +196,61 @@ class MockNavigationActivity : AppCompatActivity(), OnMapReadyCallback,
         return true
     }
 
+    @SuppressLint("MissingPermission")
     private fun calculateRoute() {
-        val userLocation = locationEngine.lastLocation
-        val accesstoken = Mapbox.getAccessToken()
-        val destination = destination
-        if (userLocation == null) {
-            Timber.d("calculateRoute: User location is null, therefore, origin can't be set.")
-            return
-        }
-
-        if (destination == null || accesstoken == null) {
-            return
-        }
-
-        val origin = Point.fromLngLat(userLocation.longitude, userLocation.latitude)
-        if (TurfMeasurement.distance(origin, destination, TurfConstants.UNIT_METERS) < 50) {
-            startRouteButton.visibility = View.GONE
-            return
-        }
-
-        val navigationRouteBuilder = NavigationRoute.builder(this).apply {
-            this.accessToken(accesstoken)
-            this.origin(origin)
-            this.destination(destination)
-            this.voiceUnits(DirectionsCriteria.METRIC)
-            this.alternatives(true)
-            this.user("gh")
-            this.baseUrl(BASE_URL)
-        }
-
-        navigationRouteBuilder.build().getRoute(object : Callback<DirectionsResponse> {
-            override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
-                Timber.d("Url: %s", call.request().url().toString())
-                response.body()?.let { response ->
-                    if (response.routes().isNotEmpty()) {
-                        val directionsRoute = response.routes().first()
-                        this@MockNavigationActivity.route = directionsRoute
-                        navigationMapRoute?.addRoutes(response.routes())
-                    }
+        val context = this.baseContext
+        locationEngine.getLastLocation(object : LocationEngineCallback<LocationEngineResult> {
+            override fun onSuccess(result: LocationEngineResult) {
+                val userLocation = result.lastLocation
+                val accesstoken = Mapbox.getAccessToken()
+                val destination = destination
+                if (userLocation == null) {
+                    Timber.d("calculateRoute: User location is null, therefore, origin can't be set.")
+                    return
                 }
+
+                if (destination == null || accesstoken == null) {
+                    return
+                }
+
+                val origin = Point.fromLngLat(userLocation.longitude, userLocation.latitude)
+                if (TurfMeasurement.distance(origin, destination, TurfConstants.UNIT_METERS) < 50) {
+                    startRouteButton.visibility = View.GONE
+                    return
+                }
+
+                val navigationRouteBuilder = NavigationRoute.builder(context).apply {
+                    this.accessToken(accesstoken)
+                    this.origin(origin)
+                    this.destination(destination)
+                    this.voiceUnits(DirectionsCriteria.METRIC)
+                    this.alternatives(true)
+                    this.user("gh")
+                    this.baseUrl(BASE_URL)
+                }
+
+                navigationRouteBuilder.build().getRoute(object : Callback<DirectionsResponse> {
+                    override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
+                        Timber.d("Url: %s", call.request().url().toString())
+                        response.body()?.let { response ->
+                            if (response.routes().isNotEmpty()) {
+                                val directionsRoute = response.routes().first()
+                                this@MockNavigationActivity.route = directionsRoute
+                                navigationMapRoute?.addRoutes(response.routes())
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<DirectionsResponse>, throwable: Throwable) {
+                        Timber.e(throwable, "onFailure: navigation.getRoute()")
+                    }
+                })
             }
 
-            override fun onFailure(call: Call<DirectionsResponse>, throwable: Throwable) {
-                Timber.e(throwable, "onFailure: navigation.getRoute()")
+            override fun onFailure(exception: Exception) {
+                TODO("Not yet implemented")
             }
+
         })
     }
 
