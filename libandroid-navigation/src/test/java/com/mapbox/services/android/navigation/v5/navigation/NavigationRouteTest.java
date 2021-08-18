@@ -102,7 +102,7 @@ public class NavigationRouteTest extends BaseTest {
   }
 
   @Test
-  @Ignore
+  @Ignore("duno")
   public void reverseOriginDestinationDoesntMessUpBearings() throws Exception {
     NavigationRoute navigationRoute = NavigationRoute.builder(context, localeUtils)
       .accessToken(ACCESS_TOKEN)

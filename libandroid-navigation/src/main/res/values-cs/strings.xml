@@ -13,7 +13,6 @@
     <plurals name="numberOfDays">
         <item quantity="one">den</item>
         <item quantity="few">dni</item>
-        <item quantity="many">dnů</item>
         <item quantity="other">den</item>
     </plurals>
     <!-- Hour -->

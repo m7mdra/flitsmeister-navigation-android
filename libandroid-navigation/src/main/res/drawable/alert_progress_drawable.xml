@@ -3,7 +3,6 @@
     <item android:id="@android:id/background">
         <shape/>
     </item>
-
     <item android:id="@android:id/progress">
         <clip>
             <shape/>

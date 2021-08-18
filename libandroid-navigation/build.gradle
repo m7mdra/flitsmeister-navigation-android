@@ -2,6 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
+
 android {
   compileSdkVersion androidVersions.compileSdkVersion
   buildToolsVersion androidVersions.buildToolsVersion
@@ -74,9 +80,10 @@ dependencies {
 apply from: 'javadoc.gradle'
 //apply from: "${rootDir}/gradle/mvn-push-android.gradle"
 apply from: "${rootDir}/gradle/checkstyle.gradle"
-//apply from: "${rootDir}/gradle/jacoco.gradle"
+apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/dependencies-graph.gradle"
 apply from: "${rootDir}/gradle/dependency-updates.gradle"
+
 repositories {
   mavenCentral()
 }
