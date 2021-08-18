@@ -35,7 +35,7 @@ android {
       testCoverageEnabled = true
     }
   }
-  
+
   testOptions {
     unitTests.returnDefaultValues = true
     unitTests.includeAndroidResources = true
@@ -77,7 +77,7 @@ dependencies {
 
 apply from: 'javadoc.gradle'
 //apply from: "${rootDir}/gradle/mvn-push-android.gradle"
-//apply from: "${rootDir}/gradle/checkstyle.gradle"
+apply from: "${rootDir}/gradle/checkstyle.gradle"
 apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/dependencies-graph.gradle"
-//apply from: "${rootDir}/gradle/dependency-updates.gradle"
+apply from: "${rootDir}/gradle/dependency-updates.gradle"
