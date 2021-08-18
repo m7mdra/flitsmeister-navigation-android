@@ -235,6 +235,17 @@ public final class NavigationRoute {
         }
 
         /**
+         * Enables a route to be refreshable
+         *
+         * @param enableRefresh whether or not to enable refresh
+         * @return this builder for chaining options together
+         */
+        public Builder enableRefresh(boolean enableRefresh) {
+            directionsBuilder.enableRefresh(enableRefresh);
+            return this;
+        }
+
+        /**
          * This can be used to set up to 23 additional in-between points which will act as pit-stops
          * along the users route. Note that if you are using the
          * {@link DirectionsCriteria#PROFILE_DRIVING_TRAFFIC} that the max number of waypoints allowed

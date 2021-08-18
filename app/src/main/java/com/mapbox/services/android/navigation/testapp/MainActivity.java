@@ -45,9 +45,14 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 MockNavigationActivity.class
         ));
         list.add(new SampleItem(
-                "Launcher",
-                "Launcher",
+                getString(R.string.title_navigation_launcher),
+                getString(R.string.description_navigation_launcher),
                 NavigationLauncherActivity.class
+        ));
+        list.add(new SampleItem(
+                getString(R.string.title_embedded_navigation),
+                getString(R.string.description_embedded_navigation),
+                EmbeddedNavigationActivity.class
         ));
         RecyclerView.Adapter adapter = new MainAdapter(list);
         recyclerView.setAdapter(adapter);
