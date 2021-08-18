@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 java {
@@ -76,7 +75,7 @@ dependencies {
   testImplementation dependenciesList.hamcrest
   testImplementation dependenciesList.commonsIO
   testImplementation dependenciesList.robolectric
-  compile "androidx.core:core-ktx:+"
+  implementation "androidx.core:core-ktx:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

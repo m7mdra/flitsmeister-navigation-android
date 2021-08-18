@@ -16,9 +16,11 @@ public class RouteAnnotationUpdaterTest {
     @Test
     public void updateRoute() {
         ArrayList<LegAnnotation> annotations = new ArrayList<>();
-        annotations.add(getAnnotation(getOldCongestionAnnotations()));
+        annotations.add(getAnnotation(getNewCongestionAnnotations()));
         DirectionsRoute oldRoute =
-                DirectionsRoute.builder().legs(getRouteLegs(getAnnotation(getOldCongestionAnnotations()))).build();
+                DirectionsRoute.builder().legs(getRouteLegs(getAnnotation(getOldCongestionAnnotations())))
+                        .distance(10d)
+                        .duration(2d).build();
 
         DirectionsRoute updatedRoute = new RouteAnnotationUpdater().update(oldRoute, annotations, 0);
 
