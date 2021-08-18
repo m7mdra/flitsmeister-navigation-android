@@ -1,5 +1,6 @@
 package com.mapbox.services.android.navigation.v5.navigation;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Looper;
 
@@ -18,12 +19,14 @@ class NavigationLocationEngineUpdater {
     private RouteUtils routeUtils;
     private LocationEngine locationEngine;
 
+    @SuppressLint("MissingPermission")
     NavigationLocationEngineUpdater(LocationEngine locationEngine, NavigationLocationEngineListener listener) {
         this.locationEngine = locationEngine;
         this.listener = listener;
         locationEngine.requestLocationUpdates(new LocationEngineRequest.Builder(1000).build(), listener, Looper.getMainLooper());
     }
 
+    @SuppressLint("MissingPermission")
     void updateLocationEngine(LocationEngine locationEngine) {
         removeLocationEngineListener();
         this.locationEngine = locationEngine;
