@@ -22,7 +22,7 @@ ext {
             hamcrest           : '2.0.0.0',
             errorprone         : '2.3.1',
             butterknife        : '8.8.1',
-            leakCanaryVersion  : '1.6.1',
+            leakCanaryVersion  : '2.7',
             timber             : '4.7.1',
             testRunnerVersion  : '1.0.1',
             espressoVersion    : '3.0.2',
@@ -30,8 +30,8 @@ ext {
             commonsIO          : '2.6',
             robolectric        : '4.6.1',
             lifecycle          : '1.1.1',
-            picasso            : '2.71828',
-            gmsLocation        : '15.0.1'
+            picasso            : '2.8',
+            gmsLocation        : '18.0.0'
     ]
 
     pluginVersion = [
@@ -80,8 +80,6 @@ ext {
             timber                 : "com.jakewharton.timber:timber:${version.timber}",
             picasso                : "com.squareup.picasso:picasso:${version.picasso}",
             leakCanaryDebug        : "com.squareup.leakcanary:leakcanary-android:${version.leakCanaryVersion}",
-            leakCanaryRelease      : "com.squareup.leakcanary:leakcanary-android-no-op:${version.leakCanaryVersion}",
-            leakCanaryTest         : "com.squareup.leakcanary:leakcanary-android-no-op:${version.leakCanaryVersion}",
 
             // instrumentation test
             testSpoonRunner        : "com.squareup.spoon:spoon-client:${version.spoonRunner}",

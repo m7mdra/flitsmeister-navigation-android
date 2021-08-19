@@ -597,7 +597,7 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
 
     private boolean isChangingConfigurations() {
         try {
-            return ((FragmentActivity) getContext()).isChangingConfigurations();
+            return ContextHelper.getFragmentActivity(getContext()).isChangingConfigurations();
         } catch (ClassCastException exception) {
             throw new ClassCastException("Please ensure that the provided Context is a valid FragmentActivity");
         }

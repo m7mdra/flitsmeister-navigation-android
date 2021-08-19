@@ -42,7 +42,7 @@
 
     </LinearLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/instructionLayoutText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -87,6 +87,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="San Jose / Cupertino / Saratoga Montery / SR-1"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.mapbox.services.android.navigation.ui.v5.ContextHelper;
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewModel;
 import com.mapbox.services.android.navigation.ui.v5.R;
 import com.mapbox.services.android.navigation.ui.v5.alert.AlertView;
@@ -138,7 +139,7 @@ public class NavigationAlertView extends AlertView implements FeedbackBottomShee
   @Nullable
   private FragmentManager obtainSupportFragmentManager() {
     try {
-      return ((FragmentActivity) getContext()).getSupportFragmentManager();
+      return ContextHelper.getFragmentActivity(getContext()).getSupportFragmentManager();
     } catch (ClassCastException exception) {
       Timber.e(exception);
       return null;

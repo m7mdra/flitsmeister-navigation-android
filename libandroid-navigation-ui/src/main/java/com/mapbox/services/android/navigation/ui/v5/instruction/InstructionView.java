@@ -699,7 +699,7 @@ public class InstructionView extends RelativeLayout implements FeedbackBottomShe
   @Nullable
   private FragmentManager obtainSupportFragmentManager() {
     try {
-      return ((FragmentActivity) getContext()).getSupportFragmentManager();
+      return ContextHelper.getFragmentActivity(getContext()).getSupportFragmentManager();
     } catch (ClassCastException exception) {
       Timber.e(exception);
       return null;

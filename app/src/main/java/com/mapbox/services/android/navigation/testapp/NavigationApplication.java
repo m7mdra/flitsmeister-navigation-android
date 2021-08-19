@@ -1,15 +1,10 @@
 package com.mapbox.services.android.navigation.testapp;
 
 import android.app.Application;
-import android.app.NotificationChannel;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.mapbox.mapboxsdk.Mapbox;
-import com.squareup.leakcanary.LeakCanary;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import timber.log.Timber;
 
@@ -21,12 +16,6 @@ public class NavigationApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-
-    // Leak canary
-    if (LeakCanary.isInAnalyzerProcess(this)) {
-      return;
-    }
-    LeakCanary.install(this);
 
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree());
