@@ -1,47 +1,5 @@
 package com.mapbox.services.android.navigation.ui.v5.map;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PointF;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationComponent;
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.LocationComponentOptions;
-import com.mapbox.mapboxsdk.location.OnCameraTrackingChangedListener;
-import com.mapbox.mapboxsdk.location.modes.CameraMode;
-import com.mapbox.mapboxsdk.location.modes.RenderMode;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.VectorSource;
-import com.mapbox.services.android.navigation.ui.v5.NavigationSnapshotReadyCallback;
-import com.mapbox.services.android.navigation.ui.v5.R;
-import com.mapbox.services.android.navigation.ui.v5.ThemeSwitcher;
-import com.mapbox.services.android.navigation.ui.v5.camera.CameraUpdateMode;
-import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
-import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
-import com.mapbox.services.android.navigation.v5.route.OnRouteSelectionChangeListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import static com.mapbox.mapboxsdk.style.expressions.Expression.exponential;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.interpolate;
 import static com.mapbox.mapboxsdk.style.expressions.Expression.stop;
@@ -54,13 +12,49 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacem
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconRotationAlignment;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconSize;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.MAPBOX_LOCATION_SOURCE;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.MAPBOX_WAYNAME_LAYER;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.NAVIGATION_MAXIMUM_MAP_ZOOM;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.NAVIGATION_MINIMUM_MAP_ZOOM;
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.WAYNAME_OFFSET;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.PointF;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
+import com.mapbox.mapboxsdk.location.OnCameraTrackingChangedListener;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.services.android.navigation.ui.v5.NavigationSnapshotReadyCallback;
+import com.mapbox.services.android.navigation.ui.v5.R;
+import com.mapbox.services.android.navigation.ui.v5.ThemeSwitcher;
+import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
+import com.mapbox.services.android.navigation.v5.route.OnRouteSelectionChangeListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Wrapper class for {@link MapboxMap}.
@@ -71,9 +65,9 @@ import static com.mapbox.services.android.navigation.v5.navigation.NavigationCon
  * These APIs include drawing a route line, camera animations, and more.
  */
 public class NavigationMapboxMap {
-
+  private static final String MARKER_ICON_ID = "NavigationMapboxMap_MARKER_ICON_ID";
   static final String STREETS_LAYER_ID = "streetsLayer";
-  private static final String MAPBOX_STREETS_V7 = "mapbox://mapbox.mapbox-streets-v7";
+  private static final String MAPBOX_STREETS_V7 = "mapbox://styles/mapbox/streets-v11";
   private static final String STREETS_SOURCE_ID = "streetsSource";
   private static final String ROAD_LABEL = "road_label";
   private static final float DEFAULT_WIDTH = 20f;
@@ -94,7 +88,7 @@ public class NavigationMapboxMap {
   private MapWayName mapWayName;
   private SymbolLayer waynameLayer;
   private MapLayerInteractor layerInteractor;
-  private List<Marker> mapMarkers = new ArrayList<>();
+  private SymbolManager symbolManager;
 
   @Nullable
   private MapFpsDelegate mapFpsDelegate;
@@ -110,6 +104,7 @@ public class NavigationMapboxMap {
   public NavigationMapboxMap(@NonNull MapView mapView, @NonNull MapboxMap mapboxMap) {
     this.mapboxMap = mapboxMap;
     this.mapView = mapView;
+    initializeSymbolManager(mapView, mapboxMap, mapboxMap.getStyle());
     initializeLocationComponent(mapView, mapboxMap);
     initializeMapPaddingAdjustor(mapView, mapboxMap);
     initializeMapLayerInteractor(mapboxMap);
@@ -149,8 +144,13 @@ public class NavigationMapboxMap {
    * @param position the point at which the marker will be placed
    */
   public void addMarker(Context context, Point position) {
-    Marker marker = createMarkerFromIcon(context, position);
-    mapMarkers.add(marker);
+    SymbolOptions symbolOptions = new SymbolOptions()
+            .withLatLng(new LatLng(position.latitude(), position.longitude()))
+            .withIconImage(MARKER_ICON_ID);
+    ArrayList<SymbolOptions> symbolOptionsArrayList = new ArrayList<>();
+    symbolOptionsArrayList.add(symbolOptions);
+
+    symbolManager.create(symbolOptionsArrayList);
   }
 
   /**
@@ -594,7 +594,6 @@ public class NavigationMapboxMap {
     if (mapWayName != null) {
       return;
     }
-    initializeStreetsSource(mapboxMap);
     WaynameFeatureFinder featureFinder = new WaynameFeatureFinder(mapboxMap);
     mapWayName = new MapWayName(featureFinder, paddingAdjustor);
     mapWayName.updateWayNameQueryMap(settings.isMapWayNameEnabled());
@@ -627,38 +626,19 @@ public class NavigationMapboxMap {
     layerInteractor = new MapLayerInteractor(mapboxMap);
   }
 
-  private void initializeStreetsSource(MapboxMap mapboxMap) {
-//    VectorSource streetSource = new VectorSource(STREETS_SOURCE_ID, MAPBOX_STREETS_V7);
-//    mapboxMap.getStyle().addSource(streetSource);
-//    LineLayer streetsLayer = new LineLayer(STREETS_LAYER_ID, STREETS_SOURCE_ID)
-//      .withProperties(
-//        lineWidth(DEFAULT_WIDTH),
-//        lineColor(Color.WHITE)
-//      )
-//      .withSourceLayer(ROAD_LABEL);
-//    mapboxMap.getStyle().addLayerAt(streetsLayer, LAST_INDEX);
-  }
-
   private void initializeRoute(MapView mapView, MapboxMap map) {
     Context context = mapView.getContext();
     int routeStyleRes = ThemeSwitcher.retrieveNavigationViewStyle(context, R.attr.navigationViewRouteStyle);
     mapRoute = new NavigationMapRoute(null, mapView, map, routeStyleRes);
   }
 
-  @NonNull
-  private Marker createMarkerFromIcon(Context context, Point position) {
-    LatLng markerPosition = new LatLng(position.latitude(),
-      position.longitude());
-    Icon markerIcon = ThemeSwitcher.retrieveThemeMapMarker(context);
-    return mapboxMap.addMarker(new MarkerOptions()
-      .position(markerPosition)
-      .icon(markerIcon));
+  private void removeAllMarkers() {
+    symbolManager.deleteAll();
   }
 
-  private void removeAllMarkers() {
-    for (Marker marker : mapMarkers) {
-      mapboxMap.removeMarker(marker);
-    }
+  private void initializeSymbolManager(@NonNull MapView mapView, @NonNull MapboxMap mapboxMap, @NonNull Style style) {
+    this.symbolManager = new SymbolManager(mapView, mapboxMap, style);
+    style.addImage(MARKER_ICON_ID, ThemeSwitcher.retrieveThemeMapMarkerAsBitmap(mapView.getContext()));
   }
 
   private void initializeFpsDelegate(MapView mapView) {

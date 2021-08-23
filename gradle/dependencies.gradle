@@ -13,6 +13,7 @@ ext {
             mapboxMapSdk       : '9.4.0',
             mapboxSdkServices  : '5.9.0',
             mapboxCore         : '1.3.0',
+            maplibreAnnotation : '1.0.0',
             autoValue          : '1.5.4',
             autoValueParcel    : '0.2.5',
             junit              : '4.12',
@@ -51,8 +52,7 @@ ext {
             mapboxMapSdk           : "org.maplibre.gl:android-sdk:${version.mapboxMapSdk}",
             mapboxSdkServices      : "org.maplibre.gl:android-sdk-services:${version.mapboxSdkServices}",
             mapboxSdkTurf          : "org.maplibre.gl:android-sdk-turf:${version.mapboxSdkServices}",
-
-//            mapboxSdkCore          : "com.mapbox.mapboxsdk:mapbox-android-core:${version.mapboxCore}",
+            maplibreAnnotation       : "org.maplibre.gl:android-plugin-annotation-v9:${version.maplibreAnnotation}",
 
             // AutoValue
             autoValue              : "com.google.auto.value:auto-value:${version.autoValue}",

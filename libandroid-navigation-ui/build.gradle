@@ -52,6 +52,8 @@ dependencies {
     exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
   }
 
+  implementation dependenciesList.maplibreAnnotation
+
   // Support libraries
   implementation dependenciesList.supportDesign
   implementation dependenciesList.supportRecyclerView

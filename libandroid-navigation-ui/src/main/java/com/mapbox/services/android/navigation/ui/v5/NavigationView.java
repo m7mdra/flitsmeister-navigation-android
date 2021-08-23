@@ -3,32 +3,27 @@ package com.mapbox.services.android.navigation.ui.v5;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageButton;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.constants.MapboxConstants;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -537,8 +532,6 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
             throw new ClassCastException("Please ensure that the provided Context is a valid FragmentActivity");
         }
     }
-
-
 
     private void initializeSummaryBottomSheet() {
         summaryBehavior = BottomSheetBehavior.from(summaryBottomSheet);
