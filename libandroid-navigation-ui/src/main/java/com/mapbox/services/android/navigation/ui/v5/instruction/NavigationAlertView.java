@@ -96,7 +96,7 @@ public class NavigationAlertView extends AlertView implements FeedbackBottomShee
    * <p>
    * Note this will only happen automatically in the context of
    * the {@link com.mapbox.services.android.navigation.ui.v5.NavigationView} or a {@link NavigationViewModel}
-   * has been added to the instruction view with {@link InstructionView#subscribe(NavigationViewModel)}.
+   * has been added to the instruction view with {@link InstructionView#subscribe(androidx.lifecycle.LifecycleOwner, NavigationViewModel)}.
    *
    * @param isEnabled true to show during off-route events, false to hide
    */
@@ -124,15 +124,12 @@ public class NavigationAlertView extends AlertView implements FeedbackBottomShee
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (navigationViewModel != null && isShowingReportProblem()) {
-          navigationViewModel.recordFeedback(FeedbackEvent.FEEDBACK_SOURCE_REROUTE);
-          showFeedbackBottomSheet();
-        }
-        hide();
+    setOnClickListener(view -> {
+      if (navigationViewModel != null && isShowingReportProblem()) {
+        navigationViewModel.recordFeedback(FeedbackEvent.FEEDBACK_SOURCE_REROUTE);
+        showFeedbackBottomSheet();
       }
+      hide();
     });
   }
 

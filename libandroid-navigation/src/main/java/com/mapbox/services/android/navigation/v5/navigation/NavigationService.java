@@ -31,7 +31,7 @@ import timber.log.Timber;
  */
 public class NavigationService extends Service {
 
-    private final IBinder localBinder = new LocalBinder();
+    private LocalBinder localBinder;
     private RouteProcessorBackgroundThread thread;
     private NavigationLocationEngineUpdater locationEngineUpdater;
     private RouteFetcher routeFetcher;
@@ -41,6 +41,12 @@ public class NavigationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return localBinder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        localBinder = new LocalBinder(this);
     }
 
     /**
@@ -58,6 +64,8 @@ public class NavigationService extends Service {
         if (locationEngineUpdater != null)
             locationEngineUpdater.removeLocationEngineListener();
         super.onDestroy();
+        localBinder.shutdown();
+        localBinder = null;
     }
 
     /**
@@ -136,10 +144,20 @@ public class NavigationService extends Service {
         startForeground(notificationId, notification);
     }
 
-    class LocalBinder extends Binder {
+    static class LocalBinder extends Binder {
+        private NavigationService navigationService;
+
+        public LocalBinder(NavigationService navigationService) {
+            this.navigationService = navigationService;
+        }
+
+        void shutdown() {
+            navigationService = null;
+        }
+
         NavigationService getService() {
             Timber.d("Local binder called.");
-            return NavigationService.this;
+            return navigationService;
         }
     }
 }

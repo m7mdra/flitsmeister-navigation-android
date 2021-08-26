@@ -11,9 +11,12 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
@@ -74,7 +77,7 @@ import timber.log.Timber;
  *
  * @since 0.6.0
  */
-public class InstructionView extends RelativeLayout implements FeedbackBottomSheetListener {
+public class InstructionView extends RelativeLayout implements LifecycleObserver, FeedbackBottomSheetListener {
 
   private static final String COMPONENT_TYPE_LANE = "lane";
 
@@ -105,6 +108,8 @@ public class InstructionView extends RelativeLayout implements FeedbackBottomShe
   private boolean isRerouting;
   private SoundButton soundButton;
   private FeedbackButton feedbackButton;
+
+  private LifecycleOwner lifecycleOwner;
 
   public InstructionView(Context context) {
     this(context, null);
@@ -179,45 +184,50 @@ public class InstructionView extends RelativeLayout implements FeedbackBottomShe
    * @param navigationViewModel to which this View is subscribing
    * @since 0.6.2
    */
-  public void subscribe(NavigationViewModel navigationViewModel) {
+  public void subscribe(LifecycleOwner owner, NavigationViewModel navigationViewModel) {
+    lifecycleOwner = owner;
+    lifecycleOwner.getLifecycle().addObserver(this);
     this.navigationViewModel = navigationViewModel;
-    LifecycleOwner owner = (LifecycleOwner) ContextHelper.getFragmentActivity(getContext());
-    navigationViewModel.instructionModel.observe(owner, new Observer<InstructionModel>() {
-      @Override
-      public void onChanged(@Nullable InstructionModel model) {
-        if (model != null) {
-          updateDataFromInstruction(model);
-        }
+    navigationViewModel.instructionModel.observe(lifecycleOwner, model -> {
+      if (model != null) {
+        updateDataFromInstruction(model);
       }
     });
-    navigationViewModel.bannerInstructionModel.observe(owner, new Observer<BannerInstructionModel>() {
-      @Override
-      public void onChanged(@Nullable BannerInstructionModel model) {
-        if (model != null) {
-          updateManeuverView(model.retrievePrimaryManeuverType(), model.retrieveSecondaryManeuverModifier(),
-            model.retrievePrimaryRoundaboutAngle());
-          updateDataFromBannerText(model.retrievePrimaryBannerText(), model.retrieveSecondaryBannerText());
-          updateSubStep(model.retrieveSubBannerText(), model.retrievePrimaryManeuverType());
-        }
+    navigationViewModel.bannerInstructionModel.observe(lifecycleOwner, model -> {
+      if (model != null) {
+        updateManeuverView(model.retrievePrimaryManeuverType(), model.retrieveSecondaryManeuverModifier(),
+          model.retrievePrimaryRoundaboutAngle());
+        updateDataFromBannerText(model.retrievePrimaryBannerText(), model.retrieveSecondaryBannerText());
+        updateSubStep(model.retrieveSubBannerText(), model.retrievePrimaryManeuverType());
       }
     });
-    navigationViewModel.isOffRoute.observe(owner, new Observer<Boolean>() {
-      @Override
-      public void onChanged(@Nullable Boolean isOffRoute) {
-        if (isOffRoute != null) {
-          if (isOffRoute) {
-            showRerouteState();
-          } else if (isRerouting) {
-            hideRerouteState();
-            alertView.showReportProblem();
-          }
-          isRerouting = isOffRoute;
+    navigationViewModel.isOffRoute.observe(lifecycleOwner, isOffRoute -> {
+      if (isOffRoute != null) {
+        if (isOffRoute) {
+          showRerouteState();
+        } else if (isRerouting) {
+          hideRerouteState();
+          alertView.showReportProblem();
         }
+        isRerouting = isOffRoute;
       }
     });
     subscribeAlertView();
     initializeButtonListeners();
     showButtons();
+  }
+
+  /**
+   * Unsubscribes {@link NavigationViewModel} {@link LiveData} objects
+   * by removing the observers of the {@link LifecycleOwner} when parent view is destroyed
+   */
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  public void unsubscribe() {
+    if (navigationViewModel != null) {
+      navigationViewModel.instructionModel.removeObservers(lifecycleOwner);
+      navigationViewModel.bannerInstructionModel.removeObservers(lifecycleOwner);
+      navigationViewModel.isOffRoute.removeObservers(lifecycleOwner);
+    }
   }
 
   /**

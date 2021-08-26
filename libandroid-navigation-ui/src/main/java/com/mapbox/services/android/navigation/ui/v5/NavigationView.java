@@ -14,8 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -67,7 +69,7 @@ import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
  *
  * @since 0.7.0
  */
-public class NavigationView extends CoordinatorLayout implements LifecycleObserver, OnMapReadyCallback,
+public class NavigationView extends CoordinatorLayout implements LifecycleOwner, OnMapReadyCallback,
         NavigationContract.View {
 
     private static final String MAP_INSTANCE_STATE_KEY = "navgation_mapbox_map_instance_state";
@@ -89,6 +91,7 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
     private NavigationOnCameraTrackingChangedListener onTrackingChangedListener;
     private NavigationMapboxMapInstanceState mapInstanceState;
     private CameraPosition initialMapCameraPosition;
+    private LifecycleRegistry lifecycleRegistry;
     private boolean isMapInitialized;
     private boolean isSubscribed;
 
@@ -115,6 +118,8 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
         updateSavedInstanceStateMapStyle(savedInstanceState);
         mapView.onCreate(savedInstanceState);
         updatePresenterState(savedInstanceState);
+        lifecycleRegistry = new LifecycleRegistry(this);
+        lifecycleRegistry.markState(Lifecycle.State.CREATED);
     }
 
     /**
@@ -191,6 +196,7 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
      */
     public void onDestroy() {
         shutdown();
+        lifecycleRegistry.markState(Lifecycle.State.DESTROYED);
     }
 
     public void onStart() {
@@ -198,10 +204,12 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
         if (navigationMap != null) {
             navigationMap.onStart();
         }
+        lifecycleRegistry.markState(Lifecycle.State.STARTED);
     }
 
     public void onResume() {
         mapView.onResume();
+        lifecycleRegistry.markState(Lifecycle.State.RESUMED);
     }
 
     public void onPause() {
@@ -213,6 +221,12 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
         if (navigationMap != null) {
             navigationMap.onStop();
         }
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return lifecycleRegistry;
     }
 
     /**
@@ -687,11 +701,11 @@ public class NavigationView extends CoordinatorLayout implements LifecycleObserv
      * method calls based on the {@link LiveData} updates.
      */
     private void subscribeViewModels() {
-        instructionView.subscribe(navigationViewModel);
-        summaryBottomSheet.subscribe(navigationViewModel);
+        instructionView.subscribe(this, navigationViewModel);
+        summaryBottomSheet.subscribe(this, navigationViewModel);
 
-        NavigationViewSubscriber subscriber = new NavigationViewSubscriber(navigationPresenter);
-        subscriber.subscribe(((LifecycleOwner) ContextHelper.getFragmentActivity(getContext())), navigationViewModel);
+        NavigationViewSubscriber subscriber = new NavigationViewSubscriber(this, navigationPresenter, navigationViewModel);
+        subscriber.subscribe();
         isSubscribed = true;
     }
 

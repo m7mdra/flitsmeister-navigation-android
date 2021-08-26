@@ -2,8 +2,12 @@ package com.mapbox.services.android.navigation.ui.v5.summary;
 
 import android.content.Context;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.AttributeSet;
@@ -36,7 +40,7 @@ import java.text.DecimalFormat;
  *
  * @since 0.6.0
  */
-public class SummaryBottomSheet extends FrameLayout {
+public class SummaryBottomSheet extends FrameLayout implements LifecycleObserver {
 
   private static final String EMPTY_STRING = "";
   private TextView distanceRemainingText;
@@ -47,6 +51,10 @@ public class SummaryBottomSheet extends FrameLayout {
   @NavigationTimeFormat.Type
   private int timeFormatType;
   private DistanceFormatter distanceFormatter;
+
+  private NavigationViewModel navigationViewModel;
+
+  private LifecycleOwner lifecycleOwner;
 
   public SummaryBottomSheet(Context context) {
     this(context, null);
@@ -72,18 +80,20 @@ public class SummaryBottomSheet extends FrameLayout {
     bind();
   }
 
-  public void subscribe(NavigationViewModel navigationViewModel) {
-    navigationViewModel.summaryModel.observe((LifecycleOwner) ContextHelper.getFragmentActivity(getContext()), new Observer<SummaryModel>() {
-      @Override
-      public void onChanged(@Nullable SummaryModel summaryModel) {
-        if (summaryModel != null && !isRerouting) {
-          arrivalTimeText.setText(summaryModel.getArrivalTime());
-          timeRemainingText.setText(summaryModel.getTimeRemaining());
-          distanceRemainingText.setText(summaryModel.getDistanceRemaining());
-        }
+  public void subscribe(LifecycleOwner owner, NavigationViewModel navigationViewModel) {
+    lifecycleOwner = owner;
+    lifecycleOwner.getLifecycle().addObserver(this);
+
+    this.navigationViewModel = navigationViewModel;
+
+    navigationViewModel.summaryModel.observe(lifecycleOwner, summaryModel -> {
+      if (summaryModel != null && !isRerouting) {
+        arrivalTimeText.setText(summaryModel.getArrivalTime());
+        timeRemainingText.setText(summaryModel.getTimeRemaining());
+        distanceRemainingText.setText(summaryModel.getDistanceRemaining());
       }
     });
-    navigationViewModel.isOffRoute.observe((LifecycleOwner) ContextHelper.getFragmentActivity(getContext()), isOffRoute -> {
+    navigationViewModel.isOffRoute.observe(lifecycleOwner, isOffRoute -> {
       if (isOffRoute != null) {
         isRerouting = isOffRoute;
         if (isRerouting) {
@@ -93,6 +103,18 @@ public class SummaryBottomSheet extends FrameLayout {
         }
       }
     });
+  }
+
+  /**
+   * Unsubscribes {@link NavigationViewModel} {@link LiveData} objects
+   * by removing the observers of the {@link LifecycleOwner} when parent view is destroyed
+   */
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  public void unsubscribe() {
+    if (navigationViewModel != null) {
+      navigationViewModel.summaryModel.removeObservers(lifecycleOwner);
+      navigationViewModel.isOffRoute.removeObservers(lifecycleOwner);
+    }
   }
 
   /**

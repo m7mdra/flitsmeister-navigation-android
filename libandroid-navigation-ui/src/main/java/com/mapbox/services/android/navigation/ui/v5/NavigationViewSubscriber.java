@@ -1,58 +1,54 @@
 package com.mapbox.services.android.navigation.ui.v5;
 
-import android.location.Location;
-
-import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
 
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Point;
+class NavigationViewSubscriber implements LifecycleObserver {
 
-class NavigationViewSubscriber {
+  private final LifecycleOwner lifecycleOwner;
+  private final NavigationPresenter navigationPresenter;
+  private final NavigationViewModel navigationViewModel;
 
-  private NavigationPresenter navigationPresenter;
-
-  NavigationViewSubscriber(NavigationPresenter navigationPresenter) {
+  NavigationViewSubscriber(final LifecycleOwner owner, final NavigationPresenter navigationPresenter, final NavigationViewModel navigationViewModel) {
     this.navigationPresenter = navigationPresenter;
+    this.navigationViewModel = navigationViewModel;
+    this.lifecycleOwner = owner;
+    lifecycleOwner.getLifecycle().addObserver(this);
   }
 
-  void subscribe(LifecycleOwner owner, final NavigationViewModel navigationViewModel) {
-
-    navigationViewModel.route.observe(owner, new Observer<DirectionsRoute>() {
-      @Override
-      public void onChanged(@Nullable DirectionsRoute directionsRoute) {
-        if (directionsRoute != null) {
-          navigationPresenter.onRouteUpdate(directionsRoute);
-        }
+  void subscribe() {
+    navigationViewModel.retrieveRoute().observe(lifecycleOwner, directionsRoute -> {
+      if (directionsRoute != null) {
+        navigationPresenter.onRouteUpdate(directionsRoute);
       }
     });
 
-    navigationViewModel.retrieveDestination().observe(owner, new Observer<Point>() {
-      @Override
-      public void onChanged(@Nullable Point point) {
-        if (point != null) {
-          navigationPresenter.onDestinationUpdate(point);
-        }
+    navigationViewModel.retrieveDestination().observe(lifecycleOwner, point -> {
+      if (point != null) {
+        navigationPresenter.onDestinationUpdate(point);
       }
     });
 
-    navigationViewModel.navigationLocation.observe(owner, new Observer<Location>() {
-      @Override
-      public void onChanged(@Nullable Location location) {
-        if (location != null) {
-          navigationPresenter.onNavigationLocationUpdate(location);
-        }
+    navigationViewModel.retrieveNavigationLocation().observe(lifecycleOwner, location -> {
+      if (location != null) {
+        navigationPresenter.onNavigationLocationUpdate(location);
       }
     });
 
-    navigationViewModel.shouldRecordScreenshot.observe(owner, new Observer<Boolean>() {
-      @Override
-      public void onChanged(@Nullable Boolean shouldRecordScreenshot) {
-        if (shouldRecordScreenshot != null && shouldRecordScreenshot) {
-          navigationPresenter.onShouldRecordScreenshot();
-        }
+    navigationViewModel.retrieveShouldRecordScreenshot().observe(lifecycleOwner, shouldRecordScreenshot -> {
+      if (shouldRecordScreenshot != null && shouldRecordScreenshot) {
+        navigationPresenter.onShouldRecordScreenshot();
       }
     });
+  }
+
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  void unsubscribe() {
+    navigationViewModel.retrieveRoute().removeObservers(lifecycleOwner);
+    navigationViewModel.retrieveDestination().removeObservers(lifecycleOwner);
+    navigationViewModel.retrieveNavigationLocation().removeObservers(lifecycleOwner);
+    navigationViewModel.retrieveShouldRecordScreenshot().removeObservers(lifecycleOwner);
   }
 }
