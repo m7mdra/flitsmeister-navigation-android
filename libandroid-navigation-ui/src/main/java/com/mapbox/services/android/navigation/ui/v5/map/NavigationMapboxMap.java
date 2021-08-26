@@ -19,6 +19,7 @@ import static com.mapbox.services.android.navigation.v5.navigation.NavigationCon
 import static com.mapbox.services.android.navigation.v5.navigation.NavigationConstants.WAYNAME_OFFSET;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PointF;
 import android.location.Location;
@@ -27,6 +28,7 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -434,6 +436,15 @@ public class NavigationMapboxMap {
     mapWayName.onStop();
     handleFpsOnStop();
     locationFpsDelegate.onStop();
+  }
+
+  /**
+   *  In an {@link Activity} this should be in {@link Activity#onDestroy()}.
+   *  <p>
+   *  In a {@link android.app.Fragment}, this should be in {@link Fragment#onDestroyView()}.
+   */
+  public void onDestroy() {
+    symbolManager.onDestroy();
   }
 
   /**
