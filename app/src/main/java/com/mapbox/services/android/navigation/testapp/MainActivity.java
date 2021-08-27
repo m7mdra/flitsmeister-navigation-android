@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.permissions.PermissionsManager;
+
+import com.mapbox.mapboxsdk.location.permissions.PermissionsListener;
+import com.mapbox.mapboxsdk.location.permissions.PermissionsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,21 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 getString(R.string.title_mock_navigation),
                 getString(R.string.description_mock_navigation),
                 MockNavigationActivity.class
+        ));
+        list.add(new SampleItem(
+                getString(R.string.title_navigation_launcher),
+                getString(R.string.description_navigation_launcher),
+                NavigationLauncherActivity.class
+        ));
+        list.add(new SampleItem(
+                getString(R.string.title_embedded_navigation),
+                getString(R.string.description_embedded_navigation),
+                EmbeddedNavigationActivity.class
+        ));
+        list.add(new SampleItem(
+                getString(R.string.title_fragment_navigation),
+                getString(R.string.description_fragment_navigation),
+                EmbeddedFragmentActivity.class
         ));
         RecyclerView.Adapter adapter = new MainAdapter(list);
         recyclerView.setAdapter(adapter);

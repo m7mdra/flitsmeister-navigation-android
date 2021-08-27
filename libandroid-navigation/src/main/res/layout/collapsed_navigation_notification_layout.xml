@@ -18,7 +18,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_maneuver_arrive"
-        android:tint="@android:color/white"/>
+        android:tint="@android:color/white"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/notificationDistanceText"
@@ -43,7 +44,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:src="@drawable/ic_circle"
-        android:tint="@android:color/white"/>
+        android:tint="@android:color/white"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/notificationArrivalText"

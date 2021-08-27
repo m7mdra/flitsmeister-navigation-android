@@ -1,10 +1,20 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(javaVersion)
+  }
+}
 
 android {
   compileSdkVersion androidVersions.compileSdkVersion
   buildToolsVersion androidVersions.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
   defaultConfig {
     minSdkVersion androidVersions.minSdkVersion
@@ -41,10 +51,12 @@ android {
 }
 
 dependencies {
-  api dependenciesList.mapboxSdkCore
   api dependenciesList.mapboxSdkServices
   api dependenciesList.mapboxSdkTurf
-  implementation dependenciesList.mapboxMapSdk
+  implementation(dependenciesList.mapboxMapSdk) {
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-geojson'
+    exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
+  }
 
   // Support
   implementation dependenciesList.supportAppcompatV7
@@ -62,7 +74,7 @@ dependencies {
   testImplementation dependenciesList.hamcrest
   testImplementation dependenciesList.commonsIO
   testImplementation dependenciesList.robolectric
-  compile "androidx.core:core-ktx:+"
+  implementation "androidx.core:core-ktx:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
@@ -72,6 +84,3 @@ apply from: "${rootDir}/gradle/checkstyle.gradle"
 apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/dependencies-graph.gradle"
 apply from: "${rootDir}/gradle/dependency-updates.gradle"
-repositories {
-  mavenCentral()
-}

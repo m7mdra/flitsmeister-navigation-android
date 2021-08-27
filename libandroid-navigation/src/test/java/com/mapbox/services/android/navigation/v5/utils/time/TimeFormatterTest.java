@@ -5,11 +5,12 @@ import org.junit.Test;
 import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TimeFormatterTest {
 
   @Test
-  public void checksTwelveHoursTimeFormat() throws Exception {
+  public void checksTwelveHoursTimeFormat() {
     Calendar time = Calendar.getInstance();
     int anyYear = 2018;
     int anyMonth = 3;
@@ -22,10 +23,9 @@ public class TimeFormatterTest {
     int twelveHoursTimeFormatType = 0;
     boolean indifferentDeviceTwentyFourHourFormat = true;
 
-    String formattedTime = TimeFormatter.formatTime(time, elevenMinutes, twelveHoursTimeFormatType,
-      indifferentDeviceTwentyFourHourFormat);
+    String formattedTime = TimeFormatter.formatTime(time, elevenMinutes, twelveHoursTimeFormatType, indifferentDeviceTwentyFourHourFormat);
 
-    assertEquals("6:29 pm", formattedTime);
+    assertTrue(formattedTime.startsWith("6:29"));
   }
 
   @Test
@@ -65,7 +65,7 @@ public class TimeFormatterTest {
     String formattedTime = TimeFormatter.formatTime(time, elevenMinutes, noneSpecifiedTimeFormatType,
       deviceTwelveHourFormat);
 
-    assertEquals("6:29 pm", formattedTime);
+    assertTrue(formattedTime.startsWith("6:29"));
   }
 
   @Test
