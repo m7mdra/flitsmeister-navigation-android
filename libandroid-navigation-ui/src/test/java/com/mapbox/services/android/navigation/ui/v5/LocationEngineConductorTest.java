@@ -21,14 +21,16 @@ public class LocationEngineConductorTest extends BaseTest {
 
     @Test
     public void sanity() {
-        LocationEngineConductor locationEngineConductor = new LocationEngineConductor();
+        LocationEngineConductorListener mockCallback = mock(LocationEngineConductorListener.class);
+        LocationEngineConductor locationEngineConductor = new LocationEngineConductor(mockCallback);
 
         assertNotNull(locationEngineConductor);
     }
 
     @Test
     public void onInitWithSimulation_replayEngineIsProvided() {
-        LocationEngineConductor locationEngineConductor = new LocationEngineConductor();
+        LocationEngineConductorListener mockCallback = mock(LocationEngineConductorListener.class);
+        LocationEngineConductor locationEngineConductor = new LocationEngineConductor(mockCallback);
         boolean simulateRouteEnabled = true;
         locationEngineConductor.initializeLocationEngine(createMockContext(), null, simulateRouteEnabled);
 
@@ -39,7 +41,8 @@ public class LocationEngineConductorTest extends BaseTest {
 
     @Test
     public void onInitWithSimulation_replayEngineIsUpdated() {
-        LocationEngineConductor locationEngineConductor = new LocationEngineConductor();
+        LocationEngineConductorListener mockCallback = mock(LocationEngineConductorListener.class);
+        LocationEngineConductor locationEngineConductor = new LocationEngineConductor(mockCallback);
         boolean simulateRouteEnabled = true;
         locationEngineConductor.initializeLocationEngine(createMockContext(), null, simulateRouteEnabled);
 
@@ -50,7 +53,8 @@ public class LocationEngineConductorTest extends BaseTest {
 
     @Test
     public void onInitWithSimulationAndCustomEngine_customEngineIsProvided() {
-        LocationEngineConductor locationEngineConductor = new LocationEngineConductor();
+        LocationEngineConductorListener mockCallback = mock(LocationEngineConductorListener.class);
+        LocationEngineConductor locationEngineConductor = new LocationEngineConductor(mockCallback);
         LocationEngine customEngine = mock(LocationEngine.class);
         boolean simulateRouteEnabled = true;
         locationEngineConductor.initializeLocationEngine(createMockContext(), customEngine, simulateRouteEnabled);

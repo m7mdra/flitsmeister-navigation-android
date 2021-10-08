@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.LiveData;
@@ -240,7 +239,7 @@ public class NavigationView extends CoordinatorLayout implements LifecycleOwner,
      */
     @Override
     public void onMapReady(final MapboxMap mapboxMap) {
-        mapboxMap.setStyle(new Style.Builder().fromUri(getContext().getString(R.string.map_view_styleUrl)), style -> {
+        mapboxMap.setStyle(new Style.Builder().fromUri(getStyleUrl()), style -> {
             initializeNavigationMap(mapView, mapboxMap);
             onNavigationReadyCallback.onNavigationReady(navigationViewModel.isRunning());
             isMapInitialized = true;
@@ -719,5 +718,13 @@ public class NavigationView extends CoordinatorLayout implements LifecycleOwner,
         navigationViewModel.onDestroy(isChangingConfigurations());
         ImageCoordinator.getInstance().shutdown();
         navigationMap = null;
+    }
+
+    private String getStyleUrl() {
+        return getContext().getString(getStyleUrlResourceId());
+    }
+
+    private int getStyleUrlResourceId() {
+        return getContext().getResources().getIdentifier("map_view_styleUrl", "string", getContext().getPackageName());
     }
 }

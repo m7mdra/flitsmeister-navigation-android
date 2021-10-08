@@ -63,6 +63,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import timber.log.Timber;
@@ -246,10 +247,14 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   }
 
   private void fetchRoute() {
+    HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+    httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
     NavigationRoute.Builder builder = NavigationRoute.builder(this)
       .accessToken(Mapbox.getAccessToken())
       .baseUrl(getString(R.string.base_url))
       .user("gh")
+            .interceptor(httpLoggingInterceptor)
       .origin(currentLocation)
       .profile(getRouteProfileFromSharedPreferences())
       .alternatives(true);
@@ -344,7 +349,6 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
     optionsBuilder.initialMapCameraPosition(initialPosition);
 
     optionsBuilder.directionsRoute(route);
-    String offlinePath = obtainOfflinePath();
 
     NavigationLauncher.startNavigation(this, optionsBuilder.build());
   }

@@ -270,7 +270,7 @@ public class NavigationViewModel extends AndroidViewModel {
   }
 
   private void initializeNavigationLocationEngine() {
-    locationEngineConductor = new LocationEngineConductor();
+    locationEngineConductor = new LocationEngineConductor(locationEngineCallback);
   }
 
   private void initializeLanguage(NavigationUiOptions options) {
