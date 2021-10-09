@@ -725,6 +725,6 @@ public class NavigationView extends CoordinatorLayout implements LifecycleOwner,
     }
 
     private int getStyleUrlResourceId() {
-        return getContext().getResources().getIdentifier("map_view_styleUrl", "string", getContext().getPackageName());
+        return getContext().getResources().getIdentifier("map_view_style_url", "string", getContext().getPackageName());
     }
 }

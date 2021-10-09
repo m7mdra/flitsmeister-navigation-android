@@ -8,13 +8,11 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
@@ -62,7 +60,7 @@ public class NavigationFragment extends Fragment {
     private void setupMap(MapView mapView, Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_styleUrl)), style -> {
+            mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_style_url)), style -> {
                 symbolManager = new SymbolManager(mapView, mapboxMap, style);
                 this.mapboxMap = mapboxMap;
                 addPinIcon(style);

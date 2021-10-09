@@ -181,7 +181,7 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
         this.mapboxMap = mapboxMap;
         Context context = this;
         this.mapboxMap.addOnMapClickListener(this);
-        mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_styleUrl)), style -> {
+        mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_style_url)), style -> {
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
             locationComponent.activateLocationComponent(context, style);
             locationComponent.setRenderMode(RenderMode.GPS);

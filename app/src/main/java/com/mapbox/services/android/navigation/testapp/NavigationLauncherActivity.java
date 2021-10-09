@@ -22,7 +22,6 @@ import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.core.constants.Constants;
-import com.mapbox.core.utils.TextUtils;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -45,7 +44,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.camera.CameraUpdateMode;
-import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
 import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCameraUpdate;
 import com.mapbox.services.android.navigation.ui.v5.map.NavigationMapboxMap;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
@@ -187,7 +185,7 @@ public class NavigationLauncherActivity extends AppCompatActivity implements OnM
   @Override
   public void onMapReady(@NotNull MapboxMap mapboxMap) {
     NavigationLauncherActivity activity = this;
-    mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_styleUrl)), style -> {
+    mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.map_view_style_url)), style -> {
       mapboxMap.addOnMapLongClickListener(activity);
       map = new NavigationMapboxMap(mapView, mapboxMap);
       map.setOnRouteSelectionChangeListener(activity);
