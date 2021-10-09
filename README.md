@@ -12,7 +12,7 @@ Fork of the flitsmeister-navigation-android with the following changes:
 
 2. Configure the map_view_style_url by your own tiles API service (self hosted or for example MapTiler)
 ```xml
-<string name="base_url" translatable="false">https://api.maptiler.com/maps/streets/style.json?key=YOUR_MAP_TILER_API_KEY</string>
+<string name="map_view_style_url" translatable="false">https://api.maptiler.com/maps/streets/style.json?key=YOUR_MAP_TILER_API_KEY</string>
 ```
 
 # License
