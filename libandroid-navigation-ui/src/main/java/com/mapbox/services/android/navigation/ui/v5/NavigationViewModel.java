@@ -217,9 +217,11 @@ public class NavigationViewModel extends AndroidViewModel {
   }
 
   void stopNavigation() {
-    navigation.removeProgressChangeListener(null);
-    navigation.removeMilestoneEventListener(null);
-    navigation.stopNavigation();
+    if(navigation != null) {
+      navigation.removeProgressChangeListener(null);
+      navigation.removeMilestoneEventListener(null);
+      navigation.stopNavigation();
+    }
   }
 
   boolean isOffRoute() {
