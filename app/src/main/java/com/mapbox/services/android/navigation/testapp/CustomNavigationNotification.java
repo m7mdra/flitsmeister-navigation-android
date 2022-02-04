@@ -73,6 +73,11 @@ public class CustomNavigationNotification implements NavigationNotification {
 
     private PendingIntent createPendingStopIntent(Context context) {
         Intent stopNavigationIntent = new Intent(STOP_NAVIGATION_ACTION);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return PendingIntent.getBroadcast(context, 0, stopNavigationIntent, PendingIntent.FLAG_MUTABLE);
+        }
         return PendingIntent.getBroadcast(context, 0, stopNavigationIntent, 0);
     }
 

@@ -40,6 +40,12 @@ android {
     unitTests.returnDefaultValues = true
     unitTests.includeAndroidResources = true
   }
+  android {
+    lint {
+      baseline = file("lint-baseline.xml")
+    }
+  }
+
 }
 
 dependencies {
@@ -81,7 +87,6 @@ dependencies {
 }
 
 apply from: 'javadoc.gradle'
-apply from: "${rootDir}/gradle/mvn-push-android.gradle"
 apply from: "${rootDir}/gradle/checkstyle.gradle"
 apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/dependencies-graph.gradle"
