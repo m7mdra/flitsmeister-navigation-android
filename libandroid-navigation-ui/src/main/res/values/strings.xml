@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="map_view_style_url" translatable="false">YOUR_STYLE_URL</string>
+    <string name="map_view_style_url" translatable="false">https://api.maptiler.com/maps/openstreetmap/style.json?key=M5g5zZAp9tzdwq36fzcm</string>
 
     <!-- Indicates that rerouting is in progress -->
     <string name="rerouting">Rerouting…</string>

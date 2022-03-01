@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -53,11 +54,16 @@ import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfMeasurement;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,7 +125,7 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
         Context context = getApplicationContext();
         CustomNavigationNotification customNotification = new CustomNavigationNotification(context);
         MapboxNavigationOptions options = MapboxNavigationOptions.builder()
-                .navigationNotification(customNotification)
+//                .navigationNotification(customNotification)
                 .build();
 
         navigation = new MapboxNavigation(this, Mapbox.getAccessToken(), options);
@@ -156,6 +162,7 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
             navigation.setLocationEngine(locationEngine);
             mapboxMap.getLocationComponent().setLocationComponentEnabled(true);
             navigation.startNavigation(route);
+
             mapboxMap.removeOnMapClickListener(this);
         }
     }
@@ -242,6 +249,16 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
         if (waypoint != null) {
             navigationRouteBuilder.addWaypoint(waypoint);
         }
+        navigationRouteBuilder.interceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+        navigationRouteBuilder.interceptor(chain -> {
+
+            Request request = chain.request();
+            HttpUrl httpUrl = request.url().newBuilder().addQueryParameter("key", "f8bc9140-2e6c-4fd5-ba19-1c90d313afcc").build();
+            Request proceed = request.newBuilder().url(httpUrl).build();
+            Log.d("MEGA", "fetchRoute: "+httpUrl.toString());
+
+            return chain.proceed(proceed);
+        });
         navigationRouteBuilder.baseUrl(getString(R.string.base_url));
         navigationRouteBuilder.user("gh");
         navigationRouteBuilder.enableRefresh(true);
