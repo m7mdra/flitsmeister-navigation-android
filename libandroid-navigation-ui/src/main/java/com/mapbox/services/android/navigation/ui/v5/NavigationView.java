@@ -530,6 +530,7 @@ public class NavigationView extends CoordinatorLayout implements LifecycleOwner,
     private void bind() {
         mapView = findViewById(R.id.navigationMapView);
         instructionView = findViewById(R.id.instructionView);
+        hideInstructionView();
         ViewCompat.setElevation(instructionView, 10);
         summaryBottomSheet = findViewById(R.id.summaryBottomSheet);
         cancelBtn = findViewById(R.id.cancelBtn);
@@ -680,6 +681,17 @@ public class NavigationView extends CoordinatorLayout implements LifecycleOwner,
         @NavigationTimeFormat.Type
         int timeFormatType = options.navigationOptions().timeFormatType();
         summaryBottomSheet.setTimeFormat(timeFormatType);
+    }
+
+    public void hideInstructionView() {
+        instructionView.setVisibility(GONE);
+        invalidate();
+
+    }
+
+    public void showInstructionView() {
+        instructionView.setVisibility(VISIBLE);
+        invalidate();
     }
 
     private void initializeNavigationListeners(NavigationViewOptions options, MapboxNavigation navigation) {

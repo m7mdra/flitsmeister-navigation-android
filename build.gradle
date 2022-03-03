@@ -5,65 +5,66 @@ buildscript {
     ext.kotlin_version = '1.4.10'
     apply from: "${rootDir}/gradle/dependencies.gradle"
 
-  repositories {
-    google()
-    maven {
-      url "https://plugins.gradle.org/m2/"
+    repositories {
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
-  }
 
-  dependencies {
-    classpath 'com.android.tools.build:gradle:7.1.0'
-    classpath pluginDependencies.gradle
-    classpath pluginDependencies.coveralls
-    classpath pluginDependencies.errorprone
-    classpath pluginDependencies.dependencyUpdates
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.0'
+        classpath pluginDependencies.gradle
+        classpath pluginDependencies.coveralls
+        classpath pluginDependencies.errorprone
+        classpath pluginDependencies.dependencyUpdates
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 task testReport(type: TestReport, group: 'Build') {
-  description = 'Generates an aggregate test report'
-  destinationDir = file("${buildDir}/reports/allTests")
+    description = 'Generates an aggregate test report'
+    destinationDir = file("${buildDir}/reports/allTests")
 }
 
 allprojects {
-  repositories {
-    google()
-    maven { url 'https://plugins.gradle.org/m2' }
-  }
+    repositories {
+        google()
+        maven { url 'https://plugins.gradle.org/m2' }
+        maven { url 'https://jitpack.io' }
+    }
 
-  group = GROUP
-  version = VERSION_NAME
+    group = GROUP
+    version = VERSION_NAME
 }
 
 subprojects {
-  apply plugin: 'idea'
-  apply plugin: 'net.ltgt.errorprone'
-  apply from: "${rootDir}/gradle/dependencies.gradle"
+    apply plugin: 'idea'
+    apply plugin: 'net.ltgt.errorprone'
+    apply from: "${rootDir}/gradle/dependencies.gradle"
 
-  dependencies {
-    errorprone dependenciesList.errorprone
-  }
-
-  pluginManager.withPlugin('com.android.library') {
-    apply plugin: 'maven-publish'
-
-    task sourceJar(type: Jar) {
-      classifier 'sources'
-      from android.sourceSets.main.java.srcDirs
+    dependencies {
+        errorprone dependenciesList.errorprone
     }
 
-    publishing {
-      publications {
-        bar(MavenPublication) {
-          groupId = GROUP
-          artifactId = POM_ARTIFACT_ID
-          version = VERSION_NAME
-          artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-          artifact tasks.sourceJar
+    pluginManager.withPlugin('com.android.library') {
+        apply plugin: 'maven-publish'
+
+        task sourceJar(type: Jar) {
+            classifier 'sources'
+            from android.sourceSets.main.java.srcDirs
         }
-      }
+
+        publishing {
+            publications {
+                bar(MavenPublication) {
+                    groupId = GROUP
+                    artifactId = POM_ARTIFACT_ID
+                    version = VERSION_NAME
+                    artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+                    artifact tasks.sourceJar
+                }
+            }
 
 //      repositories {
 //        maven {
@@ -75,10 +76,18 @@ subprojects {
 //          }
 //        }
 //      }
+        }
     }
-  }
+}
+
+//Exclude duplicated module from maplibre sdk
+subprojects.forEach {
+    it.configurations.all {
+        exclude group: 'org.maplibre.gl', module: 'android-sdk-geojson'
+        exclude group: 'org.maplibre.gl', module: 'android-sdk-turf'
+    }
 }
 
 task clean(type: Delete) {
-  delete rootProject.buildDir
+    delete rootProject.buildDir
 }

@@ -54,14 +54,10 @@ android {
 }
 
 dependencies {
-    api dependenciesList.mapboxSdkServices
-    api dependenciesList.mapboxSdkTurf
-    implementation(dependenciesList.mapboxMapSdk) {
-        exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-geojson'
-        exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-sdk-turf'
-    }
-
-    // Support
+    api 'com.github.m7mdra.maplibre-java:services:38a24f18ed'
+    api ('com.github.m7mdra.maplibre-java:services-turf:38a24f18ed')
+    implementation(dependenciesList.mapboxMapSdk)
+       // Support
     implementation dependenciesList.supportAppcompatV7
 
     // Logging

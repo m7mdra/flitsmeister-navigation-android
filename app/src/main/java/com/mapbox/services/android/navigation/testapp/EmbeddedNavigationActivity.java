@@ -81,6 +81,7 @@ public class EmbeddedNavigationActivity extends AppCompatActivity implements OnN
                 .build();
         navigationView.onCreate(savedInstanceState);
         navigationView.initialize(this, initialPosition);
+        navigationView.hideInstructionView();
     }
 
     @Override
@@ -216,6 +217,7 @@ public class EmbeddedNavigationActivity extends AppCompatActivity implements OnN
                 .interceptor(chain -> {
 
                     Request request = chain.request();
+                    HttpUrl httpUrl = request.url().newBuilder().addQueryParameter("key", "f8bc9140-2e6c-4fd5-ba19-1c90d313afcc").build();
                     Request proceed = request.newBuilder().url(httpUrl).build();
                     Log.d("MEGA", "fetchRoute: " + httpUrl.toString());
 

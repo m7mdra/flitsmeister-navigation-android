@@ -33,6 +33,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.instruction.Instruction;
 import com.mapbox.services.android.navigation.v5.location.replay.ReplayRouteLocationEngine;
@@ -70,8 +71,8 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class MockNavigationActivity extends AppCompatActivity implements OnMapReadyCallback,
-MapboxMap.OnMapClickListener, ProgressChangeListener, NavigationEventListener,
-MilestoneEventListener, OffRouteListener, RefreshCallback {
+        MapboxMap.OnMapClickListener, ProgressChangeListener, NavigationEventListener,
+        MilestoneEventListener, OffRouteListener, RefreshCallback {
 
     private static final int BEGIN_ROUTE_MILESTONE = 1001;
     private static final double TWENTY_FIVE_METERS = 25d;
@@ -93,6 +94,7 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
     private MapboxNavigation navigation;
     private DirectionsRoute route;
     private NavigationMapRoute navigationMapRoute;
+    private NavigationCamera navigationCamera;
     private Point destination;
     private Point waypoint;
     private RouteRefresh routeRefresh;
@@ -162,6 +164,10 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
             navigation.setLocationEngine(locationEngine);
             mapboxMap.getLocationComponent().setLocationComponentEnabled(true);
             navigation.startNavigation(route);
+            navigationCamera.start(route);
+            navigationCamera.addProgressChangeListener(navigation);
+
+
 
             mapboxMap.removeOnMapClickListener(this);
         }
@@ -174,11 +180,12 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
 
     private void newOrigin() {
         if (mapboxMap != null) {
-            LatLng latLng = Utils.getRandomLatLng(new double[] {-77.1825, 38.7825, -76.9790, 39.0157});
+            LatLng latLng = new LatLng(26.4207, 50.0888);
             ((ReplayRouteLocationEngine) locationEngine).assignLastLocation(
                     Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude())
             );
-            mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+            mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11.0));
+
         }
     }
 
@@ -194,6 +201,8 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
             locationComponent.setRenderMode(RenderMode.GPS);
             locationComponent.setLocationComponentEnabled(false);
             navigationMapRoute = new NavigationMapRoute(navigation, mapView, mapboxMap);
+            navigationCamera = new NavigationCamera(mapboxMap, navigation, locationComponent);
+
             Snackbar.make(findViewById(R.id.container), "Tap map to place waypoint",
                     BaseTransientBottomBar.LENGTH_LONG).show();
             locationEngine = new ReplayRouteLocationEngine();
@@ -243,7 +252,7 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
         }
 
         final NavigationRoute.Builder navigationRouteBuilder = NavigationRoute.builder(this)
-                .accessToken(Mapbox.getAccessToken());
+                .accessToken("pk.");
         navigationRouteBuilder.origin(origin);
         navigationRouteBuilder.destination(destination);
         if (waypoint != null) {
@@ -253,8 +262,9 @@ MilestoneEventListener, OffRouteListener, RefreshCallback {
         navigationRouteBuilder.interceptor(chain -> {
 
             Request request = chain.request();
+            HttpUrl httpUrl = request.url().newBuilder().addQueryParameter("key", "f8bc9140-2e6c-4fd5-ba19-1c90d313afcc").build();
             Request proceed = request.newBuilder().url(httpUrl).build();
-            Log.d("MEGA", "fetchRoute: "+httpUrl.toString());
+            Log.d("MEGA", "fetchRoute: " + httpUrl.toString());
 
             return chain.proceed(proceed);
         });

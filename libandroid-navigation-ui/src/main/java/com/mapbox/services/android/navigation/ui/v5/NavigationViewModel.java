@@ -237,7 +237,7 @@ public class NavigationViewModel extends AndroidViewModel {
     startNavigation(route);
     updateSimulatedRoute(route);
     resetConfigurationFlag();
-    sendEventOnRerouteAlong(route);
+     sendEventOnRerouteAlong(route);
     isOffRoute.setValue(false);
   }
 
